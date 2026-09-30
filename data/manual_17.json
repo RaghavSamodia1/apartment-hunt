@@ -1,0 +1,16 @@
+{
+ "_add_core": [
+  "elegant-atmos"
+ ],
+ "elegant-atmos": {
+  "name": "Elegant Atmos",
+  "developer": "Elegant Builders & Developers",
+  "floors_text": "1B+G+14",
+  "floors": 14,
+  "towers": 2,
+  "conf": "medium",
+  "src": "Housiey listing (2 towers, 1B+G+14)",
+  "acres": 1.8,
+  "units": 136
+ }
+}

@@ -1,0 +1,12 @@
+{
+ "concorde-mayfair": {"floors_text": "2B+G+14", "floors": 14, "towers": 4, "conf": "high", "src": "Squareyards text + Housiey/PropNewz pages agree", "acres": 3.3},
+ "vajram-vivera": {"name": "Vajram Vivera", "developer": "Vajram Group", "floors_text": "2B+G+17", "floors": 17, "towers": 3, "conf": "high", "src": "Housiey + builder announcement agree", "acres": 6.2},
+ "slv-golden-towers": {"floors_text": "1B+S+G+11", "floors": 11, "towers": 2, "conf": "medium", "src": "Housiey / NoBroker / JLL Homes listings", "acres": 3.12, "units": 242},
+ "legacy-salvador": {"floors_text": "G+4", "floors": 4, "towers": 10, "towers_note": "10 low-rise blocks", "conf": "medium", "src": "NoBroker / Propsoch listings"},
+ "msr-rr-wish-tales": {"name": "MSR RR Wish Tales", "floors_text": "G+4", "floors": 4, "towers": 1, "conf": "medium", "src": "Squareyards / Houssed listings", "units": 101, "acres": 1.35},
+ "vbhc-aurora": {"name": "VBHC Aurora", "developer": "VBHC Value Homes", "floors_text": "2B+G+19", "floors": 19, "towers": 1, "towers_note": "single boutique tower, 72 homes", "conf": "high", "src": "Housiey + second listing agree"},
+ "casagrand-estancia": {"floors_text": "B+G+13", "floors": 13, "towers": 3, "conf": "medium", "src": "Casagrand project page + RoofAndFloor", "acres": 7.32, "units": 429},
+ "century-kindle": {"name": "Century Kindle", "floors_text": "2B+G+18/19", "floors": 19, "towers": 2, "towers_note": "Phase 1 (RERA 008542); Housiey lists a larger 6-tower master layout", "conf": "low", "src": "Sources give 18 or 19 floors; towers differ by phase", "acres": 4.65, "units": 458},
+ "assetz-soho-and-sky": {"name": "Assetz Soho & Sky", "floors_text": "G+13", "floors": 13, "towers": null, "towers_note": "5 or 8 towers depending on phase", "conf": "low", "src": "Phase 1/2 listings conflict (G+9 vs G+13)"},
+ "elegant-takt": {"name": "Elegant Takt Tropical Symphony", "developer": "Elegant Builders & Developers", "floors_text": "G+14", "floors": 14, "towers": 2, "conf": "medium", "src": "99acres / PropertyCrow listings", "acres": 3.46, "units": 310}
+}

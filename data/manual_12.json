@@ -1,0 +1,11 @@
+{
+ "shriram-luxor": {"name": "Shriram Luxor", "developer": "Shriram Properties", "floors_text": "13–14 floors", "floors": 14, "towers": 8, "conf": "medium", "src": "Homes247 / Investormart / RoofAndFloor listings", "acres": 4.6, "units": 444},
+ "equinox-water-edge": {"name": "Equinox Water Edge", "developer": "Equinox", "floors_text": "40 floors", "floors": 40, "towers": 5, "towers_note": "large 3 BHK (2,500+ sq ft) and 4 BHK homes", "conf": "medium", "src": "Squareyards / PropertyCrow listings", "acres": 8.0, "units": 400},
+ "godrej-aqua": {"name": "Godrej Aqua", "developer": "Godrej Properties", "floors_text": "2B+G+12/15", "floors": 15, "towers": 9, "conf": "medium", "src": "Houssed / RoofAndFloor listings", "acres": 7.18, "units": 540},
+ "pride-pegasus": {"name": "Pride Pegasus", "developer": "Pride Group", "floors_text": "13 floors", "floors": 13, "towers": 2, "conf": "medium", "src": "Houssed / 99acres listings", "acres": 2.0, "units": 208},
+ "casagrand-boulevard": {"name": "Casagrand Boulevard", "developer": "Casagrand", "floors_text": "B+G+4", "floors": 4, "towers": 10, "towers_note": "10 low-rise blocks in 2 wings", "conf": "medium", "src": "RoofAndFloor / Squareyards listings", "acres": 7.67, "units": 528},
+ "salarpuria-gold-summit": {"name": "Sattva Gold Summit", "developer": "Salarpuria Sattva", "floors_text": "32–33 floors", "floors": 33, "towers": 4, "conf": "medium", "src": "Homes247 / NoBroker listings", "acres": 3.0, "units": 183},
+ "prisha-hanging-gardens": {"name": "Prisha Hanging Gardens", "developer": "Prisha India", "floors_text": "10 floors", "floors": 10, "towers": 3, "conf": "medium", "src": "Squareyards / NoBroker listings", "acres": 2.7, "units": 120},
+ "siroya-environ": {"name": "Siroya Environ", "developer": "Siroya Developers", "floors_text": "19 floors", "floors": 19, "towers": 2, "conf": "medium", "src": "NoBroker / RoofAndFloor listings", "acres": 4.5, "units": 212},
+ "adarsh-pinecourt": {"name": "Adarsh Pinecourt", "developer": "Adarsh Developers", "floors_text": "4 floors", "floors": 4, "towers": 10, "towers_note": "10 low-rise blocks", "conf": "medium", "src": "99acres / JLL Homes listings", "acres": 4.12, "units": 201}
+}

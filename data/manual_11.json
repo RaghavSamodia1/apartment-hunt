@@ -1,0 +1,11 @@
+{
+ "alisha-the-habitat": {"name": "Alisha The Habitat", "developer": "Alisha Projects", "floors_text": "G+4", "floors": 4, "towers": 5, "towers_note": "5 low-rise blocks", "conf": "medium", "src": "Builder page + Squareyards", "acres": 4.0, "units": 260},
+ "coevolve-northern-star": {"name": "Coevolve Northern Star", "developer": "Coevolve", "floors_text": "13 floors", "floors": 13, "towers": 2, "conf": "medium", "src": "RoofAndFloor / 99acres listings", "acres": 1.65, "units": 130, "rera": "PRM/KA/RERA/1251/309/PR/170916/000151"},
+ "ncn-diamond": {"name": "NCN Diamond", "developer": "NCN Developers", "floors_text": "3 floors", "floors": 3, "towers": 2, "conf": "medium", "src": "Squareyards / BigEstate listings", "acres": 1.0, "units": 96},
+ "creative-shree-vikas": {"name": "Creative Shree Vikas", "developer": "Creative & Vikas Builders", "floors_text": "B+G+4", "floors": 4, "towers": 2, "conf": "medium", "src": "99acres / HuntVastuHomes listings", "acres": 1.32, "units": 117},
+ "assetz-here-and-now": {"name": "Assetz Here & Now", "developer": "Assetz", "floors_text": "13 floors", "floors": 13, "towers": 2, "towers_note": "studio, 1 & 2 BHK per listings; check for 3 BHK resale", "conf": "medium", "src": "Squareyards / 27Estates listings", "acres": 3.0, "units": 384},
+ "vaishnavi-north-24": {"name": "Vaishnavi North 24", "developer": "Vaishnavi Group", "floors_text": "4–6 floors (sources differ)", "floors": 4, "towers": 3, "towers_note": "sources say 3–4 towers", "conf": "low", "src": "99acres / Investormart listings disagree", "acres": 2.72, "units": 134},
+ "expat-wisdom-tree": {"name": "Expat Wisdom Tree", "developer": "Expat Projects", "floors_text": "14 floors", "floors": 14, "towers": 3, "conf": "medium", "src": "Squareyards / NoBroker listings", "acres": 3.0, "units": 236},
+ "brigade-altamont": {"name": "Brigade Altamont", "developer": "Brigade", "floors_text": "11 floors", "floors": 11, "towers": 2, "towers_note": "one source says 4 towers", "conf": "medium", "src": "Squareyards / BigEstate listings", "acres": 3.0, "units": 211},
+ "goyal-and-co-orchid-greens": {"name": "Goyal Orchid Greens", "developer": "Goyal & Co", "floors_text": "14 floors", "floors": 14, "towers": 4, "towers_note": "one source says 5 towers", "conf": "medium", "src": "HousingMan / Homes247 listings", "acres": 2.4, "units": 214}
+}

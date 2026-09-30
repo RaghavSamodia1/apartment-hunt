@@ -1,0 +1,12 @@
+{
+ "arge-helios": {"name": "Arge Helios", "developer": "Arge Realty", "floors_text": "13 floors", "floors": 13, "towers": 1, "conf": "medium", "src": "Houssed / Squareyards listings", "acres": 2.0, "units": 151},
+ "chowriappa-constellation": {"name": "Chowriappa Constellation", "developer": "Chowriappa Constructions", "floors_text": "15 floors", "floors": 15, "towers": 8, "conf": "low", "src": "Listings say 8 towers × 15 floors but only ~113 homes — verify", "acres": 2.0, "units": 113},
+ "ramky-serene-woods": {"name": "Ramky Serene Woods", "developer": "Ramky Group", "towers": 1, "conf": "low", "src": "Floor count not found; single tower, 61 large 3 BHK homes", "acres": 3.5, "units": 61},
+ "mantri-splendor": {"name": "Mantri Splendor", "developer": "Mantri", "floors_text": "11 floors", "floors": 11, "towers": 5, "conf": "medium", "src": "NoBroker / Ghar.tv listings", "acres": 3.0, "units": 260},
+ "samruddhi-rhythm": {"name": "Samruddhi Rhythm", "developer": "Samruddhi", "floors_text": "B+G+4", "floors": 4, "towers": 4, "conf": "medium", "src": "CityAir / RathiGlobal listings", "acres": 3.0, "units": 200},
+ "purva-palm-beach": {"name": "Purva Palm Beach", "developer": "Puravankara", "floors_text": "19 floors", "floors": 19, "towers": 19, "conf": "medium", "src": "RoofAndFloor / NoBroker listings", "acres": 19.5, "units": 1323},
+ "goyal-and-co-orchid-woods": {"name": "Goyal Orchid Woods", "developer": "Goyal & Co", "floors_text": "14 floors", "floors": 14, "towers": 7, "conf": "medium", "src": "NoBroker / Investormart listings", "acres": 3.0, "units": 392},
+ "plama-heights": {"name": "Plama Heights", "developer": "Plama Developers", "floors_text": "14 floors", "floors": 14, "towers": 5, "conf": "medium", "src": "Squareyards / NoBroker listings", "acres": 3.0, "units": 257},
+ "pride-palatia": {"name": "Pride Palatia", "developer": "Pride Group", "floors_text": "13 floors", "floors": 13, "towers": 2, "conf": "low", "src": "Numbers identical to Pride Pegasus in listings — verify", "acres": 2.0, "units": 208},
+ "rohan-upavan": {"name": "Rohan Upavan", "developer": "Rohan Builders", "floors_text": "2B+G+19", "floors": 19, "towers": 13, "towers_note": "multi-phase; blocks of 19–20 floors", "conf": "medium", "src": "Regrob / BengaluruProperties listings", "acres": 13.5, "units": 970}
+}

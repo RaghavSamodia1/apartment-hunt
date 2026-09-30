@@ -1,0 +1,13 @@
+{
+ "sobha-city": {"name": "Sobha City", "developer": "Sobha", "floors_text": "15–22 floors (varies by cluster)", "floors": 22, "towers": 12, "towers_note": "36-acre township with clusters: Casa Serenita, Santorini, Mykonos, Casa Paradiso, Aristos", "conf": "medium", "src": "NoBroker / HomeBazaar / BigEstate listings", "acres": 36.0},
+ "sobha-city-santorini": {"name": "Sobha City Santorini", "developer": "Sobha", "floors_text": "19 floors", "floors": 19, "towers": 6, "conf": "medium", "src": "HomeBazaar / BigEstate listings", "units": 455},
+ "rmz-azure": {"name": "RMZ Azure", "developer": "RMZ Homes", "floors_text": "13 floors", "floors": 13, "towers": 2, "conf": "medium", "src": "99acres / NoBroker listings", "acres": 1.92, "units": 182},
+ "arvind-sporcia": {"name": "Arvind Sporcia", "developer": "Arvind SmartSpaces", "floors_text": "G+14", "floors": 14, "towers": 7, "conf": "medium", "src": "Arvind SmartSpaces page / RoofAndFloor", "acres": 5.0, "units": 456},
+ "godrej-woodsman-estate": {"name": "Godrej Woodsman Estate", "developer": "Godrej Properties", "floors_text": "16 floors", "floors": 16, "towers": 7, "conf": "medium", "src": "Squareyards / CityAir listings", "acres": 15.0, "units": 924},
+ "vajram-tiara": {"name": "Vajram Tiara", "developer": "Vajram Group", "floors_text": "14 floors", "floors": 14, "towers": 4, "conf": "medium", "src": "99acres / PropertyCrow listings", "acres": 4.42, "units": 265},
+ "prisha-orchids": {"name": "Prisha Orchids", "developer": "Prisha India", "towers": 3, "conf": "low", "src": "Floor count not found in sources", "acres": 2.27, "units": 167},
+ "bhartiya-nikoo-homes": {"name": "Bhartiya City Nikoo Homes", "developer": "Bhartiya City", "floors_text": "33–38 floors (varies by phase)", "floors": 38, "towers": null, "towers_note": "125-acre township; phases have 5–10 towers each", "conf": "low", "src": "Phase-wise listings (Nikoo 2: up to 33, Nikoo 5: 3B+3S+37, Phase 2: 3B+G+38)"},
+ "bhartiya-leela-residences": {"name": "Bhartiya City Leela Residences", "developer": "Bhartiya City", "floors_text": "2B+G+23", "floors": 23, "towers": 3, "conf": "medium", "src": "Squareyards / PropTimes listings", "acres": 1.5, "units": 176},
+ "adarsh-crest-phase-1": {"name": "Adarsh Crest", "developer": "Adarsh Developers", "floors_text": "2B+G+16 (other listings: 10 floors)", "floors": 16, "towers": 5, "conf": "low", "src": "Housiey says 5 towers 2B+G+16; other pages say 2 towers × 10 floors", "acres": 3.3, "units": 203},
+ "puravankara-purva-pavilion": {"name": "Purva Pavilion", "developer": "Puravankara", "floors_text": "B+G+8", "floors": 8, "towers": 13, "conf": "medium", "src": "NoBroker / Squareyards listings", "acres": 8.0, "units": 208}
+}

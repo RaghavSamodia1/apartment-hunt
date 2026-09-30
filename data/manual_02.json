@@ -1,0 +1,11 @@
+{
+ "century-liva": {"name": "Century Liva", "floors_text": "2B+G+17", "floors": 17, "towers": 1, "towers_note": "single tower; unit count differs by source (≈100–250)", "conf": "high", "src": "Housiey + two other listings agree", "acres": 3.0},
+ "bscpl-bollineni-elanza": {"name": "BSCPL Bollineni Elanza", "floors_text": "12 floors", "floors": 12, "towers": 2, "conf": "medium", "src": "Squareyards / Rathi listings", "acres": 3.95, "units": 199},
+ "bcm-panache": {"name": "BCM Panache", "developer": "BCM Group", "floors_text": "G+13", "floors": 13, "towers": 1, "conf": "medium", "src": "NoBroker / Propsoch listings", "acres": 1.67, "units": 69},
+ "divine-green-leaf": {"name": "Divine Green Leaf", "floors_text": "4 floors", "floors": 4, "towers": null, "towers_note": "low-rise blocks", "conf": "medium", "src": "99acres / RoofAndFloor listings", "acres": 1.83, "units": 163},
+ "sri-balaji-serene": {"name": "Sri Balaji Serene", "floors_text": "G+4", "floors": 4, "towers": 8, "towers_note": "8 low-rise blocks", "conf": "medium", "src": "RoofAndFloor / listings", "acres": 4.49, "units": 376},
+ "concorde-neo": {"name": "Concorde Neo", "floors_text": "2B+G+18", "floors": 18, "towers": 6, "conf": "high", "src": "Builder press release + 99acres + PropNewz", "acres": 4.02, "units": 424},
+ "elegant-aura": {"name": "Elegant Aura", "developer": "Elegant Builders & Developers", "floors_text": "4 floors", "floors": 4, "towers": 1, "conf": "low", "src": "Squareyards / Houssed; small low-rise project", "acres": 1.21, "units": 86},
+ "goyal-orchid-salisbury": {"name": "Goyal Orchid Salisbury", "floors_text": "2B+G+13/14", "floors": 14, "towers": 7, "conf": "high", "src": "Housiey + 99acres agree", "acres": 6.07, "units": 663},
+ "ranka-ankura": {"name": "Ranka Ankura", "developer": "Ranka Group", "floors_text": "B+G+20/21", "floors": 21, "towers": 4, "conf": "medium", "src": "Housiey / 99acres listings", "acres": 4.7, "units": 410}
+}

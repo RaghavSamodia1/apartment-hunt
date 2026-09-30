@@ -1,0 +1,13 @@
+{
+ "ncc-urban-mayfair": {"name": "NCC Urban Mayfair", "developer": "NCC Urban", "floors_text": "18 floors", "floors": 18, "towers": 5, "conf": "medium", "src": "99acres / Squareyards / PropNewz listings", "acres": 3.81, "units": 359},
+ "ncc-nagarjuna-meadows-2": {"name": "NCC Nagarjuna Meadows 2", "developer": "NCC Urban", "floors_text": "18 floors", "floors": 18, "towers": 12, "conf": "medium", "src": "NoBroker / 99acres listings", "acres": 5.82, "units": 522},
+ "krishna-shelton": {"name": "Krishna Shelton", "developer": "Krishna Enterprises", "floors_text": "G+13", "floors": 13, "towers": 2, "conf": "medium", "src": "HousingMan / 99acres listings", "acres": 3.83, "units": 260},
+ "salarpuria-sattva-exotic": {"name": "Sattva Exotic", "developer": "Salarpuria Sattva", "floors_text": "2B+G+14", "floors": 14, "towers": 3, "conf": "medium", "src": "JLL Homes / Houssed listings", "acres": 4.65, "units": 345},
+ "l-t-raintree-boulevard": {"name": "L&T Raintree Boulevard", "developer": "L&T Realty", "floors_text": "14–15 floors", "floors": 15, "towers": null, "towers_note": "multi-phase 65-acre township; tower counts vary by phase", "conf": "low", "src": "Housiey / 99acres; phases reported differently", "acres": 65},
+ "nitesh-columbus-square": {"name": "Nitesh Columbus Square", "developer": "Nitesh Estates", "floors_text": "13 floors", "floors": 13, "towers": 6, "conf": "medium", "src": "NoBroker / Houssed listings", "acres": 4.3, "units": 364},
+ "brigade-bricklane": {"name": "Brigade Bricklane", "developer": "Brigade", "floors_text": "2B+G+4", "floors": 4, "towers": null, "towers_note": "low-rise blocks (10–20 depending on source)", "conf": "medium", "src": "Squareyards / BigEstate listings", "acres": 8.2, "units": 749},
+ "brigade-laguna": {"name": "Brigade Laguna", "developer": "Brigade", "floors_text": "14 floors", "floors": 14, "towers": 4, "conf": "medium", "src": "Brigade page / NoBroker / RoofAndFloor", "acres": 3.5, "units": 212},
+ "sobha-althea": {"name": "Sobha Althea", "developer": "Sobha", "floors_text": "B+G+16", "floors": 16, "towers": 3, "towers_note": "plus 5 blocks of Azalea row houses (G+1)", "conf": "medium", "src": "Sobha / PropNewz-style listings", "acres": 8.0, "units": 176},
+ "shriram-sahaana": {"name": "Shriram Sahaana", "developer": "Shriram Properties", "floors_text": "13 floors", "floors": 13, "towers": 3, "conf": "medium", "src": "99acres / Squareyards listings", "acres": 6.0, "units": 364},
+ "ramky-one-north": {"name": "Ramky One North", "developer": "Ramky Group", "floors_text": "13 floors", "floors": 13, "towers": 5, "conf": "medium", "src": "99acres / Regrob listings", "acres": 7.14, "units": 745}
+}

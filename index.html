@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Yelahanka Apartment Hunt</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css">
+<style>
+:root{
+  --bg:#f5f6f8; --panel:#ffffff; --panel2:#f0f2f5; --ink:#1b2430; --ink2:#5b6776; --line:#dfe3ea;
+  --accent:#2f5bea; --accent-ink:#ffffff; --good:#15803d; --good-bg:#e3f5e9; --bad:#b42318; --bad-bg:#fde8e6;
+  --warn:#9a6700; --warn-bg:#fff4d6; --shadow:0 1px 2px rgba(16,24,40,.06),0 4px 14px rgba(16,24,40,.08);
+  --pin:#2f5bea; --pin-short:#15803d; --pin-over:#9a6700;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1319; --panel:#171c24; --panel2:#1f2530; --ink:#e7ebf1; --ink2:#9aa6b6; --line:#2b3340;
+    --accent:#6f8fff; --accent-ink:#0b1020; --good:#4ade80; --good-bg:#12301f; --bad:#ff8a80; --bad-bg:#3a1714;
+    --warn:#f5c451; --warn-bg:#35290b; --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.35);
+    --pin:#6f8fff; --pin-short:#4ade80; --pin-over:#f5c451;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1319; --panel:#171c24; --panel2:#1f2530; --ink:#e7ebf1; --ink2:#9aa6b6; --line:#2b3340;
+  --accent:#6f8fff; --accent-ink:#0b1020; --good:#4ade80; --good-bg:#12301f; --bad:#ff8a80; --bad-bg:#3a1714;
+  --warn:#f5c451; --warn-bg:#35290b; --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.35);
+  --pin:#6f8fff; --pin-short:#4ade80; --pin-over:#f5c451;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--accent)}
+.app{display:grid;grid-template-rows:auto 1fr;height:100vh;height:100dvh}
+
+/* top bar */
+.top{display:flex;align-items:center;gap:14px;padding:10px 14px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.brand{font-weight:700;font-size:16px;letter-spacing:-.01em;white-space:nowrap}
+.brand small{display:block;font-weight:500;font-size:11px;color:var(--ink2);letter-spacing:0}
+.tabs{display:flex;gap:4px;background:var(--panel2);padding:3px;border-radius:10px}
+.tab{border:0;background:transparent;padding:6px 12px;border-radius:8px;color:var(--ink2);font-weight:600}
+.tab[aria-selected="true"]{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+.tab .n{display:inline-block;min-width:18px;padding:0 5px;margin-left:4px;border-radius:9px;background:var(--panel2);font-size:11px;color:var(--ink2)}
+.tab[aria-selected="true"] .n{background:var(--accent);color:var(--accent-ink)}
+.grow{flex:1}
+.ghost{border:1px solid var(--line);background:var(--panel);padding:6px 10px;border-radius:8px}
+.ghost:hover{border-color:var(--accent)}
+
+/* main */
+.main{display:grid;grid-template-columns:minmax(380px,460px) 1fr;min-height:0}
+.side{display:flex;flex-direction:column;min-height:0;background:var(--panel);border-right:1px solid var(--line)}
+.filters{padding:10px 12px;border-bottom:1px solid var(--line);display:grid;gap:8px}
+.frow{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{border:1px solid var(--line);background:var(--panel);padding:3px 9px;border-radius:999px;font-size:12px;color:var(--ink2)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.frow label{font-size:12px;color:var(--ink2);display:flex;align-items:center;gap:6px}
+.frow input[type=range]{width:110px;accent-color:var(--accent)}
+.frow select,.frow input[type=search]{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:4px 8px;font:inherit;font-size:12px}
+.frow input[type=search]{flex:1;min-width:120px}
+.count{font-size:12px;color:var(--ink2);padding:6px 12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px}
+.list{overflow:auto;flex:1;padding:10px;display:grid;gap:10px;align-content:start;grid-auto-rows:max-content}
+.card{display:grid;grid-template-columns:132px 1fr;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;position:relative}
+.card:hover{border-color:var(--accent)}
+.card.active{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 35%,transparent)}
+.card.s{border-left:4px solid var(--good)}
+.card.r{opacity:.55}
+.thumb{background:var(--panel2);position:relative;min-height:118px}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0}
+.ph{position:absolute;inset:0;display:grid;place-items:center;color:var(--ink2);font-size:11px;text-align:center;padding:6px;background:linear-gradient(135deg,var(--panel2),var(--line))}
+.cbody{padding:8px 10px 8px 0;min-width:0;display:flex;flex-direction:column;gap:3px}
+.ctitle{font-weight:650;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.csub{font-size:12px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.price{font-weight:700;font-size:15px}
+.price small{font-weight:500;color:var(--ink2);font-size:11px}
+.facts{display:flex;flex-wrap:wrap;gap:4px}
+.f{font-size:11px;background:var(--panel2);border-radius:6px;padding:1px 6px;color:var(--ink2);white-space:nowrap}
+.f b{color:var(--ink);font-weight:650}
+.f.warn{background:var(--warn-bg);color:var(--warn)}
+.acts{display:flex;gap:6px;margin-top:auto;padding-top:4px}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:4px 9px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:5px}
+.btn:hover{border-color:var(--accent)}
+.btn.short[aria-pressed="true"]{background:var(--good);border-color:var(--good);color:#fff}
+.btn.rej[aria-pressed="true"]{background:var(--bad);border-color:var(--bad);color:#fff}
+.btn.short:hover{border-color:var(--good);color:var(--good)}
+.btn.rej:hover{border-color:var(--bad);color:var(--bad)}
+.btn.short[aria-pressed="true"]:hover,.btn.rej[aria-pressed="true"]:hover{color:#fff}
+.badge{position:absolute;left:6px;top:6px;font-size:10px;font-weight:700;padding:2px 6px;border-radius:6px;background:rgba(0,0,0,.65);color:#fff;letter-spacing:.02em}
+.badge.over{background:var(--warn);color:#fff}
+
+/* map */
+.mapwrap{position:relative;min-height:0;overflow:hidden}
+#map{position:absolute;inset:0;background:var(--panel2)}
+.pin{position:relative}
+.pin-label{position:absolute;transform:translate(-50%,-100%);margin-top:-6px;background:var(--pin);color:#fff;font:700 11px/1 system-ui,sans-serif;padding:4px 7px;border-radius:999px;white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.35);border:2px solid #fff;cursor:pointer}
+.pin-label:after{content:"";position:absolute;left:50%;bottom:-7px;transform:translateX(-50%);border:4px solid transparent;border-top-color:#fff}
+.pin.s .pin-label{background:var(--pin-short);font-size:12px;z-index:5}
+.pin.over .pin-label{background:var(--pin-over)}
+.pin.sel .pin-label{outline:3px solid color-mix(in srgb,var(--accent) 55%,transparent);transform:translate(-50%,-100%) scale(1.15)}
+.pin.r .pin-label{background:#8a94a3;opacity:.7}
+.legend{position:absolute;left:10px;bottom:10px;z-index:500;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:11px;color:var(--ink2);display:flex;gap:10px;box-shadow:var(--shadow);flex-wrap:wrap;max-width:70%}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+.leaflet-container{font:inherit}
+
+.mc{background:var(--accent);color:var(--accent-ink);border:3px solid #fff;border-radius:50%;display:grid;place-items:center;font:700 12px system-ui;box-shadow:0 1px 6px rgba(0,0,0,.4)}
+.mc.s{background:var(--pin-short)}
+/* drawer */
+.drawer{position:absolute;top:0;bottom:0;right:0;width:min(520px,100%);background:var(--panel);z-index:1200;overflow:auto;transform:translateX(102%);visibility:hidden;transition:transform .22s ease,visibility 0s .22s;box-shadow:var(--shadow);border-left:1px solid var(--line)}
+.drawer.open{transform:none;visibility:visible;transition:transform .22s ease}
+.dhead{position:sticky;top:0;z-index:2;background:var(--panel);padding:10px 14px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:flex-start}
+.dhead h2{margin:0;font-size:18px;letter-spacing:-.01em}
+.dhead .csub{white-space:normal}
+.x{border:0;background:var(--panel2);width:30px;height:30px;border-radius:8px;font-size:16px;flex:none}
+.dbody{padding:14px;display:grid;gap:16px}
+.gal{display:grid;gap:6px}
+.gmain{position:relative;aspect-ratio:16/10;background:var(--panel2);border-radius:12px;overflow:hidden;cursor:zoom-in}
+.gmain img{width:100%;height:100%;object-fit:cover;display:block}
+.gnav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:0;width:32px;height:44px;border-radius:8px;font-size:18px}
+.gnav.l{left:8px}.gnav.rt{right:8px}
+.thumbs{display:flex;gap:6px;overflow:auto;padding-bottom:2px}
+.thumbs img{width:68px;height:48px;object-fit:cover;border-radius:6px;border:2px solid transparent;cursor:pointer;flex:none;background:var(--panel2)}
+.thumbs img.on{border-color:var(--accent)}
+.sec h3{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.kv{background:var(--panel2);border-radius:10px;padding:8px 10px}
+.kv .k{font-size:11px;color:var(--ink2)}
+.kv .v{font-weight:650;font-size:15px}
+.kv .v small{font-weight:500;color:var(--ink2);font-size:11px;display:block}
+.kv.warn{background:var(--warn-bg)}
+table.pt{width:100%;border-collapse:collapse;font-size:13px}
+table.pt td,table.pt th{padding:5px 6px;border-bottom:1px solid var(--line);text-align:left}
+table.pt th{font-size:11px;color:var(--ink2);font-weight:600}
+.mp{display:grid;gap:8px}
+.mp img{width:100%;border-radius:10px;border:1px solid var(--line);cursor:zoom-in;background:#fff}
+.note{font-size:12px;color:var(--ink2)}
+.links{display:flex;flex-wrap:wrap;gap:6px}
+.links a{text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:5px 10px;font-weight:600;font-size:12px;color:var(--ink);background:var(--panel)}
+.links a:hover{border-color:var(--accent);color:var(--accent)}
+.links a.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+textarea{width:100%;min-height:70px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);padding:8px;font:inherit;resize:vertical}
+.dfoot{position:sticky;bottom:0;background:var(--panel);border-top:1px solid var(--line);padding:10px 14px;display:flex;gap:8px}
+.dfoot .btn{flex:1;justify-content:center;padding:9px}
+ul.clean{margin:0;padding-left:18px}
+ul.clean li{margin:2px 0}
+
+/* lightbox */
+.lb{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:2000;display:none;overflow:auto;padding:30px}
+.lb.on{display:block}
+.lb img{display:block;margin:0 auto;max-width:100%;max-height:none;cursor:zoom-out}
+.lb.fit img{max-height:calc(100vh - 60px);width:auto}
+.lb .cap{color:#fff;text-align:center;margin-bottom:10px;font-size:13px}
+.lbx{position:fixed;right:16px;top:12px;background:#fff;border:0;border-radius:8px;width:34px;height:34px;font-size:18px;z-index:2001}
+
+/* triage + compare overlays */
+.overlay{position:absolute;inset:0;background:var(--bg);z-index:1100;display:none;overflow:auto}
+.overlay.on{display:block}
+.triage{max-width:880px;margin:0 auto;padding:16px;display:grid;gap:12px}
+.thero{position:relative;height:min(36vh,300px);background:var(--panel2);border-radius:14px;overflow:hidden;cursor:zoom-in}
+.thero img{width:100%;height:100%;object-fit:cover;display:block}
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tbtns{display:flex;gap:10px;position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:14px 0 6px}
+.tbtns .btn{flex:1;justify-content:center;padding:14px;font-size:15px}
+.kbd{font:600 11px ui-monospace,monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 5px;color:var(--ink2);background:var(--panel)}
+.cmp{padding:16px;overflow:auto}
+.cmp table{border-collapse:separate;border-spacing:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;min-width:100%}
+.cmp th,.cmp td{padding:8px 12px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);vertical-align:top;min-width:170px;max-width:230px;font-size:13px}
+.cmp th:first-child,.cmp td:first-child{position:sticky;left:0;background:var(--panel2);min-width:120px;font-weight:600;color:var(--ink2);z-index:1}
+.cmp thead th{background:var(--panel);position:sticky;top:0;z-index:2}
+.cmp img{width:100%;height:90px;object-fit:cover;border-radius:8px;display:block;margin-bottom:6px}
+.empty{padding:30px;text-align:center;color:var(--ink2)}
+.conf-h{color:var(--good);font-weight:700}.conf-m{color:var(--warn);font-weight:700}.conf-l{color:var(--bad);font-weight:700}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--ink);max-width:560px;width:92vw;padding:20px;box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:10px;z-index:3000;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+
+/* mobile */
+.mtabs{display:none}
+#btnFilters{display:none;margin-left:auto}
+@media (max-width:860px){
+  .main{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr)}
+  body[data-mview="map"] .side{display:none}
+  body[data-mview="list"] .mapwrap{display:none}
+  .mtabs{display:flex;gap:4px}
+  .drawer{width:100%}
+  .card{grid-template-columns:110px 1fr}
+  .legend{display:none}
+  .top{gap:6px;padding:8px 10px}
+  .brand small,#hint{display:none}
+  .brand{font-size:15px}
+  .tabs{max-width:100%;overflow-x:auto}
+  .tab{padding:6px 9px;font-size:13px;white-space:nowrap}
+  .ghost{padding:5px 8px;font-size:12px}
+  #btnImport,#btnExport{display:none}
+  .filters:not(.open) .frow:not(:first-child){display:none}
+  #btnFilters{display:inline-block}
+  .tgrid{grid-template-columns:1fr}
+  .triage{padding:10px}
+  .triage .grid2{grid-template-columns:repeat(2,1fr)!important}
+}
+</style>
+</head>
+<body data-mview="list">
+<div class="app">
+  <header class="top">
+    <div class="brand">Apartment hunt<small id="sub">North Bangalore · 2 &amp; 3 BHK</small></div>
+    <div class="tabs" role="tablist" id="viewTabs">
+      <button class="tab" role="tab" data-view="explore" aria-selected="true">Explore</button>
+      <button class="tab" role="tab" data-view="triage" aria-selected="false">Triage <span class="n" id="nUndec">0</span></button>
+      <button class="tab" role="tab" data-view="short" aria-selected="false">Shortlist <span class="n" id="nShort">0</span></button>
+      <button class="tab" role="tab" data-view="compare" aria-selected="false">Compare</button>
+    </div>
+    <div class="tabs mtabs" id="mTabs">
+      <button class="tab" data-mview="list" aria-selected="true">List</button>
+      <button class="tab" data-mview="map" aria-selected="false">Map</button>
+    </div>
+    <div class="grow"></div>
+    <button class="ghost" id="btnExport" title="Download your shortlist, rejects and notes">Export</button>
+    <button class="ghost" id="btnImport" title="Restore a previous export">Import</button>
+    <button class="ghost" id="btnAbout" title="How to read this data">ⓘ About</button>
+    <button class="ghost" id="btnTheme" title="Toggle light / dark">◐</button>
+    <input type="file" id="fileImport" accept=".json" hidden>
+  </header>
+
+  <div class="main">
+    <aside class="side">
+      <div class="filters" id="filters">
+        <div class="frow">
+          <input type="search" id="q" placeholder="Search name, builder, area…">
+          <button class="ghost" id="btnFilters" type="button">Filters ▾</button>
+          <select id="sort" title="Sort">
+            <option value="km">Nearest to Yelahanka</option>
+            <option value="pmin">Price: low → high</option>
+            <option value="pmaxd">Price: high → low</option>
+            <option value="floorsd">Floors: high → low</option>
+            <option value="poss">Possession: soonest</option>
+            <option value="name">Name A–Z</option>
+          </select>
+        </div>
+        <div class="frow" id="bhkChips"><span class="note">BHK</span>
+          <button class="chip" data-bhk="2" aria-pressed="false">2</button>
+          <button class="chip" data-bhk="3" aria-pressed="false">3</button>
+          <span class="note" style="margin-left:6px">Status</span>
+          <button class="chip" data-st="Ready" aria-pressed="false">Ready</button>
+          <button class="chip" data-st="Under" aria-pressed="false">Under constr.</button>
+          <button class="chip" data-st="New" aria-pressed="false">New launch</button>
+        </div>
+        <div class="frow">
+          <label>Budget ≤ <b id="vBudget">₹2.5 Cr</b> <input type="range" id="budget" min="0.8" max="3.5" step="0.1" value="2.5"></label>
+          <label>Within <b id="vKm">16 km</b> <input type="range" id="km" min="2" max="22" step="1" value="16"></label>
+        </div>
+        <div class="frow">
+          <label>Min floors <b id="vFloors">any</b> <input type="range" id="floors" min="0" max="40" step="1" value="0"></label>
+          <select id="area" title="Area"><option value="">All areas</option></select>
+          <select id="dec" title="Decision">
+            <option value="open">Hide rejected</option>
+            <option value="undec">Undecided only</option>
+            <option value="s">Shortlisted</option>
+            <option value="r">Rejected</option>
+            <option value="all">Everything</option>
+          </select>
+        </div>
+        <div class="frow">
+          <button class="chip" id="chipExt" aria-pressed="false" title="Also show smaller / lower-budget projects with basic data only">+ Budget segment</button>
+          <button class="chip" id="chipHasFloors" aria-pressed="false">Floors known</button>
+          <button class="chip" id="chipHasMP" aria-pressed="false">Has master plan</button>
+          <button class="chip" id="chipReset">Reset</button>
+        </div>
+      </div>
+      <div class="count"><span id="countTxt"></span><span id="hint" class="note">S = shortlist · X = reject · ↑↓ = move</span></div>
+      <div class="list" id="list"></div>
+    </aside>
+
+    <section class="mapwrap">
+      <div id="map"></div>
+      <div class="legend">
+        <span><i style="background:var(--pin)"></i>Undecided</span>
+        <span><i style="background:var(--pin-short)"></i>Shortlisted</span>
+        <span><i style="background:var(--pin-over)"></i>Over ₹2.5 Cr (stretch)</span>
+        <span><i style="background:#8a94a3"></i>Rejected</span>
+      </div>
+      <div class="drawer" id="drawer" aria-live="polite"></div>
+      <div class="overlay" id="ovTriage"></div>
+      <div class="overlay" id="ovCompare"></div>
+    </section>
+  </div>
+</div>
+
+<div class="lb fit" id="lb"><button class="lbx" id="lbx" aria-label="Close">✕</button><div class="cap" id="lbcap"></div><img id="lbimg" alt=""></div>
+<dialog id="about"><form method="dialog"><h2 style="margin-top:0">How to read this data</h2>
+<p><b>Where it comes from.</b> Project pages on Squareyards (price, size, units, coordinates, photos, master plans, RERA numbers), cross-checked with PropNewz, Housiey, PropTimes, PropZilla, 99acres, NoBroker, RoofAndFloor and builder pages for floors and towers. Scraped <span id="aboutDate"></span>.</p>
+<p><b>Floors / towers.</b> <span class="conf-h">Two+ sources agree</span> means independent pages gave the same number. <span class="conf-m">From portal listings</span> means only one or two listing pages had it. <span class="conf-l">Sources differ</span> means pages disagree (often phases or towers of different heights) — check the RERA page or ask the builder. “Floors” is the number above the ground floor unless the text says otherwise (e.g. 2B+G+14 = 2 basements, ground, 14 floors).</p>
+<p><b>Prices</b> are portal asking prices before GST, registration and other charges; ready-to-move projects show the original launch-era range, so resale prices will differ. “Price on request” projects have no public price.</p>
+<p><b>Map pins</b> come from the listing site's coordinates for the project (±100–300 m). Use <i>Open in Google Maps</i> to confirm, and always verify the RERA registration before paying any token.</p>
+<p><b>Your shortlist</b> is saved in this browser only. Use <i>Export</i> to back it up or move it to another device.</p>
+<button class="btn" value="close">Close</button></form></dialog>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+<script src="data/projects.js"></script>
+<script>
+(function(){
+'use strict';
+const P = window.PROJECTS || [];
+const META = window.META || {};
+const CENTER = META.center || [13.1005, 77.5963];
+const BUDGET_CAP = META.budget_cr || 2.5;
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const byId = Object.fromEntries(P.map(p => [p.id, p]));
+
+/* ---------- persistence (localStorage, guarded) ---------- */
+const KEY = 'aptHunt.v1';
+let store = {d:{}, n:{}};
+try { const raw = localStorage.getItem(KEY); if (raw) store = Object.assign(store, JSON.parse(raw)); } catch(e){}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e){} }
+const dec = id => store.d[id] || '';
+function setDec(id, v){
+  if (dec(id) === v) delete store.d[id]; else store.d[id] = v;
+  save(); refresh(); if (state.sel === id) renderDrawer(id);
+  if (state.view === 'triage') renderTriage();
+  toast(dec(id) === 's' ? 'Shortlisted ★' : dec(id) === 'r' ? 'Rejected' : 'Cleared');
+}
+
+/* ---------- state ---------- */
+const state = {
+  q:'', sort:'km', bhk:new Set(), st:new Set(), budget:BUDGET_CAP, km:16, floors:0, area:'', dec:'open',
+  ext:false, hasFloors:false, hasMP:false, sel:null, view:'explore', gi:0, tri:null
+};
+
+/* ---------- helpers ---------- */
+const fmtCr = v => v == null ? '—' : (v >= 1 ? '₹' + (+v.toFixed(2)) + ' Cr' : '₹' + Math.round(v*100) + ' L');
+const fmtCrShort = v => v == null ? '?' : (v >= 1 ? (+v.toFixed(2)) + 'Cr' : Math.round(v*100) + 'L');
+function priceStr(p){
+  if (p.pmin == null) return 'Price on request';
+  if (p.pmax == null || Math.abs(p.pmax - p.pmin) < 0.005) return fmtCr(p.pmin);
+  return fmtCr(p.pmin) + ' – ' + fmtCr(p.pmax);
+}
+function floorsStr(p){ return p.floors_text ? p.floors_text : (p.floors ? 'G+' + p.floors : null); }
+function gmapsQ(p){ return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(p.lat + ',' + p.lng); }
+function gmapsDir(p){ return 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(p.lat + ',' + p.lng); }
+function gmapsName(p){ return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(p.name + ' ' + (p.locality || '') + ' Bengaluru'); }
+function possRank(p){
+  if (p.status === 'Ready to Move') return 0;
+  const m = /([A-Za-z]{3})\w*\.?\s*(\d{4})/.exec(p.possession || '');
+  if (!m) return 99999;
+  const mo = 'janfebmaraprmayjunjulaugsepoctnovdec'.indexOf(m[1].toLowerCase())/3;
+  return +m[2]*12 + (mo >= 0 ? mo : 0) - 2020*12;
+}
+const sz = (u, w, h) => (u && u.includes('static.squareyards.com') && !u.includes('?')) ? `${u}?aio=w-${w};h-${h};crop;` : u;
+function img(src, alt, cls){
+  return src ? `<img ${cls ? `class="${cls}" ` : ''}src="${esc(src)}" alt="${esc(alt)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'ph',textContent:this.alt}))">`
+             : `<div class="ph">${esc(alt)}</div>`;
+}
+let toastT;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 1200); }
+
+/* ---------- filtering ---------- */
+function filtered(){
+  const q = state.q.trim().toLowerCase();
+  let out = P.filter(p => {
+    if (!state.ext && p.tier === 'extended') return false;
+    if (q && !((p.name + ' ' + (p.developer||'') + ' ' + (p.locality||'') + ' ' + (p.area||'')).toLowerCase().includes(q))) return false;
+    if (state.bhk.size && !p.bhk.some(b => state.bhk.has(Math.floor(b)))) return false;
+    if (state.st.size) {
+      const k = p.status === 'Ready to Move' ? 'Ready' : p.status === 'New Launch' ? 'New' : 'Under';
+      if (!state.st.has(k)) return false;
+    }
+    if (p.pmin != null && p.pmin > state.budget + 1e-9) return false;
+    if (state.km < 22 && p.km > state.km) return false;
+    if (state.floors && !(p.floors >= state.floors)) return false;
+    if (state.area && p.area !== state.area) return false;
+    if (state.hasFloors && !p.floors) return false;
+    if (state.hasMP && !(p.img && p.img.master && p.img.master.length)) return false;
+    const d = dec(p.id);
+    if (state.dec === 'open' && d === 'r') return false;
+    if (state.dec === 'undec' && d) return false;
+    if (state.dec === 's' && d !== 's') return false;
+    if (state.dec === 'r' && d !== 'r') return false;
+    return true;
+  });
+  const s = state.sort;
+  const cmp = {
+    km:(a,b)=>a.km-b.km, name:(a,b)=>a.name.localeCompare(b.name),
+    pmin:(a,b)=>(a.pmin ?? 99)-(b.pmin ?? 99), pmaxd:(a,b)=>(b.pmax ?? -1)-(a.pmax ?? -1),
+    floorsd:(a,b)=>(b.floors ?? -1)-(a.floors ?? -1), poss:(a,b)=>possRank(a)-possRank(b)
+  }[s];
+  return out.sort(cmp);
+}
+
+/* ---------- map ---------- */
+const map = L.map('map', {zoomControl:true, preferCanvas:true}).setView(CENTER, 12);
+const base = {
+  'Streets': L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, attribution:'© OpenStreetMap'}),
+  'Light': L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {maxZoom:19, subdomains:'abcd', attribution:'© OpenStreetMap © CARTO'}),
+  'Satellite': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom:19, attribution:'Esri, Maxar, Earthstar'})
+};
+base['Streets'].addTo(map);
+L.control.layers(base, null, {position:'topright'}).addTo(map);
+L.marker(CENTER, {icon:L.divIcon({className:'', html:'<div style="transform:translate(-50%,-50%);background:#111;color:#fff;border-radius:6px;padding:2px 7px;font:700 11px system-ui;white-space:nowrap;border:2px solid #fff">YELAHANKA</div>', iconSize:[0,0]}), interactive:false, zIndexOffset:-500}).addTo(map);
+[5,10,15].forEach(r => L.circle(CENTER, {radius:r*1000, color:'#888', weight:1, dashArray:'4 6', fill:false, interactive:false, opacity:.6}).addTo(map));
+const markers = {};
+const layer = L.markerClusterGroup({showCoverageOnHover:false, maxClusterRadius:38, disableClusteringAtZoom:15, spiderfyOnMaxZoom:true, animate:false,
+  iconCreateFunction: c => { const n = c.getChildCount(); const sz = n > 30 ? 46 : n > 10 ? 40 : 34; return L.divIcon({className:'', html:`<div class="mc" style="width:${sz}px;height:${sz}px;margin:-${sz/2}px 0 0 -${sz/2}px">${n}</div>`, iconSize:[0,0]}); }}).addTo(map);
+P.forEach(p => {
+  const m = L.marker([p.lat, p.lng], {icon:pinIcon(p), riseOnHover:true});
+  m.on('click', () => select(p.id, {fly:true, scroll:true}));
+  m.bindTooltip(`<b>${esc(p.name)}</b><br>${esc(priceStr(p))}`, {direction:'top', offset:[0,-28]});
+  markers[p.id] = m;
+});
+function pinIcon(p){
+  const d = dec(p.id);
+  const cls = ['pin', d, p.pmin > BUDGET_CAP ? 'over' : '', state.sel === p.id ? 'sel' : ''].join(' ');
+  return L.divIcon({className:'', html:`<div class="${cls}"><span class="pin-label">${esc(fmtCrShort(p.pmin))}</span></div>`, iconSize:[0,0]});
+}
+function syncMarkers(list){
+  const ids = new Set(list.map(p => p.id));
+  layer.clearLayers();
+  list.forEach(p => markers[p.id].setIcon(pinIcon(p)));
+  layer.addLayers(list.map(p => markers[p.id]));
+  if (state.sel && !ids.has(state.sel)) { /* keep drawer open for the selected one */ }
+}
+
+/* ---------- list ---------- */
+function cardHTML(p){
+  const d = dec(p.id);
+  const fl = floorsStr(p);
+  const facts = [];
+  facts.push(`<span class="f"><b>${esc(p.bhk_text || '')}</b></span>`);
+  facts.push(p.floors ? `<span class="f${p.floors_conf === 'low' ? ' warn' : ''}" title="${esc(fl || '')}"><b>${p.floors}</b> floors${p.floors_conf === 'low' ? ' ?' : ''}</span>` : `<span class="f warn">${fl ? 'floors unclear' : 'floors n/a'}</span>`);
+  if (p.towers) facts.push(`<span class="f"><b>${p.towers}</b> tower${p.towers > 1 ? 's' : ''}</span>`);
+  if (p.acres) facts.push(`<span class="f"><b>${p.acres}</b> ac</span>`);
+  if (p.units) facts.push(`<span class="f"><b>${p.units}</b> homes</span>`);
+  const poss = p.status === 'Ready to Move' ? 'Ready' : (p.possession ? p.possession : p.status);
+  return `<article class="card ${d} ${state.sel === p.id ? 'active' : ''}" data-id="${esc(p.id)}" tabindex="0">
+    <div class="thumb">${img(sz(p.img && p.img.hero, 420, 320), p.name)}<span class="badge ${p.pmin > BUDGET_CAP ? 'over' : ''}">${esc(p.pmin > BUDGET_CAP ? 'STRETCH' : (p.status || '').toUpperCase())}</span></div>
+    <div class="cbody">
+      <div class="ctitle" title="${esc(p.name)}">${esc(p.name)}</div>
+      <div class="csub">${esc(p.developer || '')} · ${esc(p.locality || p.area)} · ${p.km} km</div>
+      <div class="price">${esc(priceStr(p))} <small>· ${esc(poss)}</small></div>
+      <div class="facts">${facts.join('')}</div>
+      <div class="acts">
+        <button class="btn short" data-act="s" aria-pressed="${d === 's'}">★ Shortlist</button>
+        <button class="btn rej" data-act="r" aria-pressed="${d === 'r'}">✕ Reject</button>
+      </div>
+    </div></article>`;
+}
+function renderList(list){
+  const el = $('#list');
+  if (!list.length) { el.innerHTML = '<div class="empty">Nothing matches these filters.<br>Try raising the budget or distance.</div>'; return; }
+  el.innerHTML = list.map(cardHTML).join('');
+}
+$('#list').addEventListener('click', e => {
+  const card = e.target.closest('.card'); if (!card) return;
+  const id = card.dataset.id;
+  const b = e.target.closest('[data-act]');
+  if (b) { e.stopPropagation(); setDec(id, b.dataset.act); return; }
+  select(id, {fly:true});
+});
+
+/* ---------- refresh ---------- */
+let current = [];
+function refresh(){
+  current = filtered();
+  renderList(current);
+  syncMarkers(current);
+  const shown = current.length;
+  const total = P.filter(p => state.ext || p.tier !== 'extended').length;
+  $('#countTxt').textContent = `${shown} of ${total} projects`;
+  $('#nShort').textContent = Object.values(store.d).filter(v => v === 's').length;
+  $('#nUndec').textContent = current.filter(p => !dec(p.id)).length;
+  if (state.view === 'compare') renderCompare();
+  if (state.view === 'explore' && state.fitNext) { fitTo(current); state.fitNext = false; }
+}
+function fitTo(list){
+  if (!list.length || map.getSize().x < 10) return;
+  state.mapFitted = true;
+  const b = L.latLngBounds(list.map(p => [p.lat, p.lng]).concat([CENTER]));
+  map.fitBounds(b, {padding:[40,40], maxZoom:14});
+}
+
+/* ---------- selection + drawer ---------- */
+function flyOffset(p, zoom){
+  if (map.getSize().x < 10) return;
+  const z = Math.max(zoom || 0, map.getZoom(), 14);
+  const w = document.body.dataset.mview === 'map' && innerWidth <= 860 ? 0 : Math.min(520, map.getSize().x) / 2;
+  const pt = map.project([p.lat, p.lng], z).add([w, 0]);
+  map.flyTo(map.unproject(pt, z), z, {duration:.5});
+}
+function select(id, opt={}){
+  state.sel = id; state.gi = 0;
+  const p = byId[id]; if (!p) return;
+  if (innerWidth <= 860 && document.body.dataset.mview === 'list') {
+    state.backToList = true; document.body.dataset.mview = 'map';
+    $$('#mTabs .tab').forEach(x => x.setAttribute('aria-selected', x.dataset.mview === 'map'));
+    map.invalidateSize(false);
+    if (!state.mapFitted) fitTo(current);
+  }
+  if (markers[id] && !layer.hasLayer(markers[id])) { markers[id].setIcon(pinIcon(p)); layer.addLayer(markers[id]); }
+  Object.keys(markers).forEach(k => markers[k].setIcon(pinIcon(byId[k])));
+  markers[id].setZIndexOffset(1000);
+  if (opt.fly !== false) flyOffset(p);
+  $$('.card.active').forEach(c => c.classList.remove('active'));
+  const c = $(`.card[data-id="${CSS.escape(id)}"]`);
+  if (c) { c.classList.add('active'); if (opt.scroll) c.scrollIntoView({block:'nearest', behavior:'smooth'}); }
+  renderDrawer(id);
+}
+function closeDrawer(){
+  $('#drawer').classList.remove('open'); state.sel = null;
+  if (state.backToList && innerWidth <= 860) { state.backToList = false; document.body.dataset.mview = 'list'; $$('#mTabs .tab').forEach(x => x.setAttribute('aria-selected', x.dataset.mview === 'list')); }
+  $$('.card.active').forEach(c => c.classList.remove('active'));
+  Object.keys(markers).forEach(k => markers[k].setIcon(pinIcon(byId[k])));
+}
+function kv(k, v, sub, warn){ return `<div class="kv ${warn ? 'warn' : ''}"><div class="k">${esc(k)}</div><div class="v">${v}${sub ? `<small>${esc(sub)}</small>` : ''}</div></div>`; }
+function renderDrawer(id){
+  const p = byId[id], d = dec(id), el = $('#drawer');
+  const gal = [p.img.hero].concat(p.img.gallery || []).filter(Boolean);
+  const gi = Math.min(state.gi, Math.max(gal.length - 1, 0));
+  const fl = floorsStr(p);
+  const confTxt = {high:'Two+ sources agree', medium:'From portal listings', low:'Sources differ — verify'}[p.floors_conf] || '';
+  const rows = (p.units_table || []).map(u => `<tr><td>${esc(u.t)}</td><td>${u.sqft ? u.sqft + ' sq ft' : '—'}</td><td><b>${esc(fmtCr(u.cr))}</b></td></tr>`).join('');
+  const master = (p.img.master || []).map((m, i) => `<img src="${esc(m)}" alt="Master plan of ${esc(p.name)}" loading="lazy" referrerpolicy="no-referrer" data-lb="${esc(m)}" data-cap="Master plan — ${esc(p.name)}" onerror="this.outerHTML='<div class=&quot;ph&quot; style=&quot;position:static;height:90px&quot;>Master plan image unavailable</div>'">`).join('');
+  const other = (p.links.other || []).map(o => `<a href="${esc(o.url)}" target="_blank" rel="noopener">${esc(o.label)}</a>`).join('');
+  el.innerHTML = `
+  <div class="dhead">
+    <div style="flex:1;min-width:0">
+      <h2>${esc(p.name)}</h2>
+      <div class="csub">${esc(p.developer || '')} · ${esc(p.locality || p.area)} · ${p.km} km from Yelahanka</div>
+    </div>
+    <button class="x" id="dx" aria-label="Close">✕</button>
+  </div>
+  <div class="dbody">
+    <div class="gal">
+      <div class="gmain" data-lb="${esc(gal[gi] || '')}" data-cap="${esc(p.name)}">${img(sz(gal[gi], 1000, 625), p.name)}
+        ${gal.length > 1 ? '<button class="gnav l" data-g="-1">‹</button><button class="gnav rt" data-g="1">›</button>' : ''}</div>
+      ${gal.length > 1 ? `<div class="thumbs">${gal.map((g, i) => `<img class="${i === gi ? 'on' : ''}" data-gi="${i}" src="${esc(sz(g, 140, 100))}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`).join('')}</div>` : ''}
+    </div>
+    <div class="grid2">
+      ${kv('Price', esc(priceStr(p)), p.ppsf || '', p.pmin > BUDGET_CAP)}
+      ${kv('Configuration', esc(p.bhk_text || '—'), p.size || '')}
+      ${kv('Floors', p.floors ? p.floors + ' floors' : (fl ? esc(fl) : 'Not found'), p.floors ? (fl ? fl + ' · ' : '') + confTxt : (fl ? confTxt : 'Check RERA / brochure'), !p.floors || p.floors_conf === 'low')}
+      ${kv('Towers', p.towers ? p.towers : '—', p.towers_note || '')}
+      ${kv('Homes', p.units || '—', p.acres ? p.acres + ' acres' + (p.open_pct ? ' · ' + p.open_pct + '% open' : '') : '')}
+      ${kv('Status', esc(p.status || '—'), p.possession ? 'Possession ' + p.possession : '')}
+    </div>
+    ${(p.floors_src || p.floors_alt || p.towers_note) ? `<div class="note" style="margin-top:-8px">${p.towers_note ? 'Towers: ' + esc(p.towers_note) + '. ' : ''}${p.floors_src ? 'Floors/towers from: ' + esc(p.floors_src) + '. ' : ''}${p.floors_alt ? 'Other values seen: ' + esc(p.floors_alt.join('; ')) + '.' : ''}</div>` : ''}
+    ${rows ? `<div class="sec"><h3>Price by unit</h3><table class="pt"><tr><th>Type</th><th>Area</th><th>Price</th></tr>${rows}</table><div class="note">Indicative builder/portal prices before GST, registration and other charges.</div></div>` : ''}
+    <div class="sec"><h3>Master plan</h3>
+      ${master ? `<div class="mp">${master}</div>` : `<div class="note">No master plan image found. <a target="_blank" rel="noopener" href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(p.name + ' ' + (p.locality||'') + ' Bangalore master plan')}">Search images</a></div>`}
+      ${p.master_note ? `<div class="note" style="margin-top:6px">${esc(p.master_note)}</div>` : ''}
+    </div>
+    ${p.about ? `<div class="sec"><h3>About</h3><div>${esc(p.about)}</div></div>` : ''}
+    ${(p.conn && p.conn.length) ? `<div class="sec"><h3>Connectivity</h3><ul class="clean">${p.conn.map(c => `<li>${esc(c)}</li>`).join('')}</ul></div>` : ''}
+    <div class="sec"><h3>Links</h3><div class="links">
+      <a class="primary" href="${esc(gmapsQ(p))}" target="_blank" rel="noopener">Open in Google Maps ↗</a>
+      <a href="${esc(gmapsDir(p))}" target="_blank" rel="noopener">Directions</a>
+      <a href="${esc(gmapsName(p))}" target="_blank" rel="noopener">Search by name</a>
+      ${other}
+      ${p.rera ? `<a href="https://rera.karnataka.gov.in/viewAllProjects" target="_blank" rel="noopener" title="${esc(p.rera)}">K-RERA search</a>` : ''}
+    </div>
+    ${p.rera ? `<div class="note" style="margin-top:6px">RERA: <code>${esc(p.rera)}</code></div>` : '<div class="note" style="margin-top:6px">RERA number not found in sources — verify before paying any token amount.</div>'}
+    <div class="note">Pin location: ${p.geo_note ? esc(p.geo_note) : p.geo_q === 'verified' ? 'cross-checked against a second source' : p.geo_q === 'single' ? 'from one listing source — open Google Maps to confirm' : 'approximate'}.</div>
+    </div>
+    <div class="sec"><h3>Your notes</h3><textarea id="note" placeholder="Site visit notes, broker quotes, questions…">${esc(store.n[id] || '')}</textarea></div>
+  </div>
+  <div class="dfoot">
+    <button class="btn short" data-act="s" aria-pressed="${d === 's'}">★ Shortlist</button>
+    <button class="btn rej" data-act="r" aria-pressed="${d === 'r'}">✕ Reject</button>
+  </div>`;
+  el.classList.add('open');
+  el.scrollTop = el.dataset.id === id ? el.scrollTop : 0; el.dataset.id = id;
+}
+$('#drawer').addEventListener('click', e => {
+  const t = e.target;
+  if (t.id === 'dx') return closeDrawer();
+  const a = t.closest('[data-act]'); if (a) return setDec(state.sel, a.dataset.act);
+  const g = t.closest('[data-g]');
+  if (g) { e.stopPropagation(); const p = byId[state.sel]; const n = [p.img.hero].concat(p.img.gallery || []).filter(Boolean).length; state.gi = (state.gi + +g.dataset.g + n) % n; return renderDrawer(state.sel); }
+  const ti = t.closest('[data-gi]'); if (ti) { state.gi = +ti.dataset.gi; return renderDrawer(state.sel); }
+  const lb = t.closest('[data-lb]'); if (lb && lb.dataset.lb) openLB(lb.dataset.lb, lb.dataset.cap);
+});
+$('#drawer').addEventListener('input', e => {
+  if (e.target.id === 'note' && state.sel) { const v = e.target.value; if (v.trim()) store.n[state.sel] = v; else delete store.n[state.sel]; save(); }
+});
+
+/* ---------- lightbox ---------- */
+function openLB(src, cap){ $('#lbimg').src = src; $('#lbcap').textContent = cap || ''; $('#lb').classList.add('on', 'fit'); }
+$('#lb').addEventListener('click', e => { if (e.target.id === 'lbimg') $('#lb').classList.toggle('fit'); else $('#lb').classList.remove('on'); });
+
+/* ---------- triage ---------- */
+function triageQueue(){ return current.filter(p => !dec(p.id)); }
+function renderTriage(){
+  const el = $('#ovTriage');
+  const q = triageQueue();
+  if (!q.length) { el.innerHTML = `<div class="empty"><h3>All caught up 🎉</h3><p>No undecided projects under the current filters.</p><button class="btn" id="tbackBtn">Back to map</button></div>`; return; }
+  if (!state.tri || !q.find(p => p.id === state.tri)) state.tri = q[0].id;
+  const p = byId[state.tri]; const i = q.findIndex(x => x.id === p.id);
+  const fl = floorsStr(p);
+  el.innerHTML = `<div class="triage">
+    <div class="note">${i + 1} of ${q.length} undecided · <span class="kbd">←</span> reject &nbsp;<span class="kbd">→</span> shortlist &nbsp;<span class="kbd">↓</span> skip &nbsp;<span class="kbd">Enter</span> details</div>
+    <div class="thero" data-lb="${esc((p.img.gallery || [])[0] || p.img.hero || '')}" data-cap="${esc(p.name)}">${img(sz(p.img.hero, 1000, 500), p.name)}<span class="badge ${p.pmin > BUDGET_CAP ? 'over' : ''}">${esc(p.pmin > BUDGET_CAP ? 'STRETCH' : (p.status || '').toUpperCase())}</span></div>
+    <div><div style="font-size:22px;font-weight:700;letter-spacing:-.01em">${esc(p.name)}</div>
+      <div class="csub" style="white-space:normal">${esc(p.developer || '')} · ${esc(p.locality || p.area)} · ${p.km} km from Yelahanka</div></div>
+    <div class="grid2" style="grid-template-columns:repeat(3,1fr)">
+      ${kv('Price', esc(priceStr(p)), p.ppsf || '', p.pmin > BUDGET_CAP)}
+      ${kv('Config', esc(p.bhk_text || '—'), p.size || '')}
+      ${kv('Floors', p.floors ? p.floors + ' floors' : 'n/a', (fl && p.floors ? fl : '') + (p.towers ? (fl && p.floors ? ' · ' : '') + p.towers + ' towers' : ''), !p.floors || p.floors_conf === 'low')}
+      ${kv('Homes', p.units || '—', p.acres ? p.acres + ' acres' : '')}
+      ${kv('Possession', esc(p.status === 'Ready to Move' ? 'Ready' : (p.possession || '—')), esc(p.status || ''))}
+      ${kv('Distance', p.km + ' km', 'from Yelahanka')}
+    </div>
+    <div class="tgrid">
+      <div class="mp">${(p.img.master || [])[0] ? `<img src="${esc(p.img.master[0])}" alt="Master plan" referrerpolicy="no-referrer" data-lb="${esc(p.img.master[0])}" data-cap="Master plan — ${esc(p.name)}" onerror="this.outerHTML='<div class=&quot;ph&quot; style=&quot;position:static;height:120px&quot;>Master plan unavailable</div>'">` : '<div class="ph" style="position:static;height:120px">No master plan image</div>'}</div>
+      <div class="links" style="align-content:start"><a class="primary" href="${esc(gmapsQ(p))}" target="_blank" rel="noopener">Google Maps ↗</a><a href="#" data-open="${esc(p.id)}">Full details</a></div>
+    </div>
+    <div class="tbtns">
+      <button class="btn rej" data-t="r">✕ Reject</button>
+      <button class="btn" data-t="skip">Skip</button>
+      <button class="btn short" data-t="s">★ Shortlist</button>
+    </div></div>`;
+  map.panTo([p.lat, p.lng]);
+}
+$('#ovTriage').addEventListener('click', e => {
+  if (e.target.id === 'tbackBtn') return setView('explore');
+  const o = e.target.closest('[data-open]'); if (o) { e.preventDefault(); setView('explore'); select(o.dataset.open, {fly:true}); return; }
+  const lb = e.target.closest('[data-lb]'); if (lb && lb.dataset.lb) return openLB(lb.dataset.lb, lb.dataset.cap);
+  const b = e.target.closest('[data-t]'); if (!b) return; triageAct(b.dataset.t);
+});
+function triageAct(a){
+  const q = triageQueue(); const i = q.findIndex(p => p.id === state.tri); if (i < 0) return;
+  const next = (q[i + 1] || q[0] || {}).id;
+  if (a === 'skip') { state.tri = next; return renderTriage(); }
+  const id = state.tri; store.d[id] = a; save(); state.tri = (q[i + 1] || q[i - 1] || {}).id;
+  refresh(); renderTriage(); toast(a === 's' ? 'Shortlisted ★' : 'Rejected');
+}
+
+/* ---------- compare ---------- */
+function renderCompare(){
+  const el = $('#ovCompare');
+  const list = P.filter(p => dec(p.id) === 's').sort((a,b) => a.km - b.km);
+  if (!list.length) { el.innerHTML = '<div class="empty"><h3>Nothing shortlisted yet</h3><p>Shortlist a few projects, then compare them side by side here.</p></div>'; return; }
+  const row = (label, f) => `<tr><td>${label}</td>${list.map(p => `<td>${f(p)}</td>`).join('')}</tr>`;
+  el.innerHTML = `<div class="cmp"><table>
+    <thead><tr><th></th>${list.map(p => `<th>${img(sz(p.img.hero, 360, 180), p.name)}<div>${esc(p.name)}</div><div class="note">${esc(p.developer || '')}</div></th>`).join('')}</tr></thead><tbody>
+    ${row('Price', p => `<b>${esc(priceStr(p))}</b><div class="note">${esc(p.ppsf || '')}</div>`)}
+    ${row('Config', p => esc(p.bhk_text || '—') + `<div class="note">${esc(p.size || '')}</div>`)}
+    ${row('Floors', p => p.floors ? `<b>${p.floors}</b> floors<div class="note">${esc(floorsStr(p) || '')}${p.floors_conf === 'low' ? ' · verify' : ''}</div>` : esc(floorsStr(p) || 'n/a'))}
+    ${row('Towers', p => p.towers || '—')}
+    ${row('Homes', p => p.units || '—')}
+    ${row('Land', p => p.acres ? p.acres + ' acres' : '—')}
+    ${row('Possession', p => esc(p.status === 'Ready to Move' ? 'Ready to move' : (p.possession || p.status || '—')))}
+    ${row('Area', p => esc(p.locality || p.area))}
+    ${row('Distance', p => p.km + ' km')}
+    ${row('RERA', p => `<span class="note">${esc(p.rera || '—')}</span>`)}
+    ${row('Notes', p => `<span class="note">${esc(store.n[p.id] || '')}</span>`)}
+    ${row('Links', p => `<div class="links"><a href="${esc(gmapsQ(p))}" target="_blank" rel="noopener">Maps ↗</a><a href="#" data-open="${esc(p.id)}">Details</a></div>`)}
+    </tbody></table></div>`;
+}
+$('#ovCompare').addEventListener('click', e => { const o = e.target.closest('[data-open]'); if (o) { e.preventDefault(); setView('explore'); select(o.dataset.open, {fly:true}); } });
+
+/* ---------- views ---------- */
+function setView(v){
+  if (v === 'short') { state.dec = 's'; $('#dec').value = 's'; v = 'explore'; state.fitNext = true; }
+  else if (state.view === 'explore' && v === 'explore' && state.dec === 's' && this !== 'keep') { /* stay */ }
+  state.view = v;
+  $$('#viewTabs .tab').forEach(t => t.setAttribute('aria-selected', t.dataset.view === (state.dec === 's' && v === 'explore' ? 'short' : v)));
+  $('#ovTriage').classList.toggle('on', v === 'triage');
+  $('#ovCompare').classList.toggle('on', v === 'compare');
+  if (v === 'triage') { closeDrawer(); state.tri = null; renderTriage(); }
+  if (v === 'compare') { closeDrawer(); renderCompare(); }
+  refresh();
+  setTimeout(() => map.invalidateSize(), 50);
+}
+$('#viewTabs').addEventListener('click', e => {
+  const t = e.target.closest('.tab'); if (!t) return;
+  if (t.dataset.view === 'explore' && state.dec === 's') { state.dec = 'open'; $('#dec').value = 'open'; }
+  setView(t.dataset.view);
+});
+$('#mTabs').addEventListener('click', e => {
+  const t = e.target.closest('.tab'); if (!t) return;
+  document.body.dataset.mview = t.dataset.mview;
+  $$('#mTabs .tab').forEach(x => x.setAttribute('aria-selected', x === t));
+  setTimeout(() => { map.invalidateSize(); if (t.dataset.mview === 'map' && !state.mapFitted) fitTo(current); }, 60);
+});
+
+/* ---------- filter wiring ---------- */
+const areas = [...new Set(P.map(p => p.area).filter(Boolean))].sort();
+$('#area').insertAdjacentHTML('beforeend', areas.map(a => `<option>${esc(a)}</option>`).join(''));
+function bind(){
+  $('#q').addEventListener('input', e => { state.q = e.target.value; refresh(); });
+  $('#sort').addEventListener('change', e => { state.sort = e.target.value; refresh(); });
+  $('#budget').addEventListener('input', e => { state.budget = +e.target.value; $('#vBudget').textContent = '₹' + state.budget.toFixed(1) + ' Cr'; refresh(); });
+  $('#km').addEventListener('input', e => { state.km = +e.target.value; $('#vKm').textContent = state.km >= 22 ? 'any' : state.km + ' km'; refresh(); });
+  $('#floors').addEventListener('input', e => { state.floors = +e.target.value; $('#vFloors').textContent = state.floors ? '≥ ' + state.floors : 'any'; refresh(); });
+  $('#area').addEventListener('change', e => { state.area = e.target.value; refresh(); });
+  $('#dec').addEventListener('change', e => { state.dec = e.target.value; refresh(); });
+  $('#bhkChips').addEventListener('click', e => {
+    const c = e.target.closest('.chip'); if (!c) return;
+    const on = c.getAttribute('aria-pressed') !== 'true'; c.setAttribute('aria-pressed', on);
+    const set = c.dataset.bhk ? state.bhk : state.st, val = c.dataset.bhk ? +c.dataset.bhk : c.dataset.st;
+    on ? set.add(val) : set.delete(val); refresh();
+  });
+  const tog = (id, key) => $(id).addEventListener('click', e => { const on = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', on); state[key] = on; refresh(); });
+  tog('#chipExt', 'ext'); tog('#chipHasFloors', 'hasFloors'); tog('#chipHasMP', 'hasMP');
+  $('#chipReset').addEventListener('click', () => {
+    Object.assign(state, {q:'', sort:'km', budget:BUDGET_CAP, km:16, floors:0, area:'', dec:'open', ext:false, hasFloors:false, hasMP:false}); state.bhk.clear(); state.st.clear();
+    $('#q').value = ''; $('#sort').value = 'km'; $('#budget').value = BUDGET_CAP; $('#km').value = 16; $('#floors').value = 0; $('#area').value = ''; $('#dec').value = 'open';
+    $('#vBudget').textContent = '₹' + BUDGET_CAP.toFixed(1) + ' Cr'; $('#vKm').textContent = '16 km'; $('#vFloors').textContent = 'any';
+    $$('.chip[aria-pressed]').forEach(c => c.setAttribute('aria-pressed', 'false')); state.fitNext = true; refresh();
+  });
+}
+bind();
+
+/* ---------- export / import / theme ---------- */
+$('#btnExport').addEventListener('click', () => {
+  const rows = P.filter(p => dec(p.id) === 's' || store.n[p.id]).map(p => ({id:p.id, name:p.name, decision:dec(p.id), note:store.n[p.id] || '', price:priceStr(p), maps:gmapsQ(p)}));
+  const blob = new Blob([JSON.stringify({exported:new Date().toISOString(), d:store.d, n:store.n, summary:rows}, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'apartment-hunt-decisions.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+});
+$('#btnImport').addEventListener('click', () => $('#fileImport').click());
+$('#fileImport').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  f.text().then(t => { const j = JSON.parse(t); store.d = Object.assign({}, store.d, j.d || {}); store.n = Object.assign({}, store.n, j.n || {}); save(); refresh(); toast('Imported'); }).catch(() => toast('Not a valid export file'));
+});
+$('#btnFilters').addEventListener('click', () => { const f = $('#filters'); f.classList.toggle('open'); $('#btnFilters').textContent = f.classList.contains('open') ? 'Filters ▴' : 'Filters ▾'; });
+$('#btnAbout').addEventListener('click', () => { $('#aboutDate').textContent = META.generated || ''; $('#about').showModal(); });
+$('#btnTheme').addEventListener('click', () => {
+  const r = document.documentElement; const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const cur = r.dataset.theme || (dark ? 'dark' : 'light'); r.dataset.theme = cur === 'dark' ? 'light' : 'dark';
+});
+
+/* ---------- keyboard ---------- */
+document.addEventListener('keydown', e => {
+  if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+  if (e.key === 'Escape') { if ($('#lb').classList.contains('on')) return $('#lb').classList.remove('on'); if (state.view !== 'explore') return setView('explore'); return closeDrawer(); }
+  if (state.view === 'triage') {
+    if (e.key === 'ArrowRight') triageAct('s'); else if (e.key === 'ArrowLeft') triageAct('r'); else if (e.key === 'ArrowDown') triageAct('skip');
+    else if (e.key === 'Enter') { const id = state.tri; setView('explore'); if (id) select(id, {fly:true}); }
+    return;
+  }
+  if (state.view !== 'explore') return;
+  const k = e.key.toLowerCase();
+  if (k === 's' && state.sel) setDec(state.sel, 's');
+  else if (k === 'x' && state.sel) setDec(state.sel, 'r');
+  else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    e.preventDefault(); if (!current.length) return;
+    const i = current.findIndex(p => p.id === state.sel); const n = e.key === 'ArrowDown' ? Math.min(i + 1, current.length - 1) : Math.max(i - 1, 0);
+    select(current[i < 0 ? 0 : n].id, {fly:true, scroll:true});
+  }
+});
+
+/* ---------- boot ---------- */
+$('#sub').textContent = `${META.area || 'North Bangalore'} · 2 & 3 BHK · ≤ ₹${BUDGET_CAP} Cr${META.generated ? ' · data ' + META.generated : ''}`;
+state.fitNext = true;
+refresh();
+setTimeout(() => map.invalidateSize(), 100);
+})();
+</script>
+</body>
+</html>

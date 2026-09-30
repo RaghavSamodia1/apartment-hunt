@@ -1,0 +1,12 @@
+{
+ "century-novus": {"name": "Century Novus", "floors_text": "12 floors", "floors": 12, "towers": 2, "conf": "medium", "src": "99acres / Squareyards / PropTimes listings", "acres": 2.34, "units": 234},
+ "aryan-1-celeste": {"name": "Aryan 1 Celeste", "developer": "Aryan Landmarks", "floors_text": "2B+G+14", "floors": 14, "towers": 1, "conf": "high", "src": "Housiey + second listing agree", "acres": 1.08, "units": 130},
+ "affinity-sarovar": {"name": "Affinity Sarovar", "developer": "Affinity Projects", "floors_text": "7 floors", "floors": 7, "towers": 1, "conf": "medium", "src": "JLL Homes / RoofAndFloor listings", "acres": 1.15, "units": 100},
+ "sumuk-square": {"name": "Sumuk Square", "floors_text": "B+G+4", "floors": 4, "towers": 1, "conf": "medium", "src": "NoBroker / Squareyards listings", "acres": 1.53, "units": 154},
+ "vajram-chrysanthemum": {"name": "Vajram Chrysanthemum", "developer": "Vajram Group", "floors_text": "B+G+4", "floors": 4, "towers": 4, "towers_note": "4 low-rise blocks, 8 flats per floor", "conf": "high", "src": "Housiey + Squareyards + builder listing agree", "acres": 3.42, "units": 115},
+ "kolte-patil-lakeside-24": {"name": "Kolte Patil Lakeside 24", "developer": "Kolte Patil", "floors_text": "B+S+24", "floors": 24, "towers": 1, "conf": "high", "src": "RoofAndFloor + NoBroker + builder site", "acres": 1.86, "units": 131},
+ "ckpc-winds-of-change": {"name": "CKPC Winds of Change", "developer": "CKPC", "floors_text": "B+G+6", "floors": 6, "towers": 9, "conf": "medium", "src": "Builder microsites / NoBroker", "acres": 7.5, "units": 438},
+ "concorde-antares": {"name": "Concorde Antares", "floors_text": "2B+G+16", "floors": 16, "towers": 5, "conf": "high", "src": "Housiey + 99acres + PropNewz", "acres": 7.0, "units": 592},
+ "karle-vario-homes": {"name": "Karle Vario Homes", "developer": "Karle Infra", "floors_text": "4B+34 floors", "floors": 34, "towers": 2, "conf": "medium", "src": "RoofAndFloor / 360realtors listings; part of 62-acre Karle Town Centre", "acres": 3.15, "units": 400},
+ "casagrand-keatsway": {"name": "Casagrand Keatsway", "floors_text": "B+G+10", "floors": 10, "towers": null, "conf": "medium", "src": "Casagrand site + NoBroker", "acres": 3.74, "units": 286}
+}

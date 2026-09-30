@@ -1,0 +1,5 @@
+{
+ "tvs-emerald-isle-of-trees": {"name": "TVS Emerald Isle of Trees", "developer": "TVS Emerald", "floors_text": "2B+G+14", "floors": 14, "towers": 3, "conf": "high", "src": "Housiey + PropNewz + listings agree", "acres": 2.71, "units": 154},
+ "kumar-prospera": {"name": "Kumar Prospera", "developer": "Kumar Properties", "floors_text": "25 floors", "floors": 25, "towers": 2, "conf": "medium", "src": "99acres / RoofAndFloor listings (acreage differs: 2.14 vs 4.45)", "units": 229},
+ "purva-northern-lights": {"name": "Purva Northern Lights", "developer": "Puravankara", "floors_text": "2B+G+31", "floors": 31, "towers": 8, "towers_note": "KIADB Aerospace Park township, ~3,000 homes across phases", "conf": "medium", "src": "Housiey + project pages", "acres": 24.6}
+}

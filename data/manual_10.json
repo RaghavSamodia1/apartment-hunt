@@ -1,0 +1,10 @@
+{
+ "prestige-garden-bay": {"name": "Prestige Garden Bay", "developer": "Prestige Group", "floors_text": "4 floors", "floors": 4, "towers": 8, "towers_note": "8 low-rise blocks; 3 & 4 BHK of 2,159–3,978 sq ft", "conf": "medium", "src": "99acres / Houssed / PropertyCrow listings", "acres": 6.2, "units": 184},
+ "ds-max-skycity": {"name": "DS Max Skycity", "developer": "DS Max Properties", "floors_text": "G+19", "floors": 19, "towers": 1, "conf": "medium", "src": "Squareyards / RathiGlobal listings", "acres": 2.93, "units": 228},
+ "hiranandani-glen-classic": {"name": "Hiranandani Glen Classic", "developer": "Hiranandani", "floors_text": "18 floors", "floors": 18, "towers": 3, "conf": "medium", "src": "99acres / HousingMan listings", "acres": 10.02, "units": 288},
+ "puravankara-purva-atmosphere": {"name": "Purva Atmosphere", "developer": "Puravankara", "floors_text": "3B+G+33/34", "floors": 34, "towers": 3, "conf": "high", "src": "Housiey + Puravankara page + PropNewz agree", "acres": 13.0, "units": 939},
+ "unishire-terraza": {"name": "Unishire Terraza", "developer": "Unishire Group", "floors_text": "14–15 floors", "floors": 15, "towers": 4, "conf": "medium", "src": "JLL Homes / HousingMan listings (14 vs 15)", "acres": 3.0, "units": 182},
+ "mahaveer-celesse": {"name": "Mahaveer Celesse", "developer": "Mahaveer Group", "floors_text": "2B+G+14", "floors": 14, "towers": 8, "towers_note": "8 blocks", "conf": "high", "src": "Housiey + builder/portal listings agree", "acres": 4.34, "units": 545},
+ "prestige-misty-waters": {"name": "Prestige Misty Waters", "developer": "Prestige Group", "floors_text": "25 floors", "floors": 25, "towers": 5, "conf": "medium", "src": "Regrob / QuikrHomes listings", "acres": 5.7, "units": 558},
+ "karle-zenith": {"name": "Karle Zenith", "developer": "Karle Infra", "floors_text": "34 floors", "floors": 34, "towers": 3, "conf": "medium", "src": "99acres / Squareyards listings", "acres": 4.5, "units": 396}
+}

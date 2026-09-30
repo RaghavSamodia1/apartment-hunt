@@ -1,0 +1,9 @@
+{
+ "_drop": ["ozone-urbana", "karle-town-centre"],
+ "prestige-finsbury-park-regent": {"name": "Prestige Finsbury Park – Regent", "developer": "Prestige Group", "floors_text": "2B+G+20", "floors": 20, "towers": 6, "conf": "medium", "src": "NoBroker / builder-linked listings (Finsbury Park = Hyde + Regent, 25 acres)", "acres": 10.0, "units": 958},
+ "prestige-finsbury-park-hyde": {"name": "Prestige Finsbury Park – Hyde", "developer": "Prestige Group", "floors_text": "B+G+20/22", "floors": 22, "towers": 12, "towers_note": "1 & 2 BHK only", "conf": "medium", "src": "BookNewProperty / NoBroker listings", "acres": 15.0, "units": 2092},
+ "prestige-monte-carlo": {"name": "Prestige Monte Carlo", "developer": "Prestige Group", "floors_text": "G+7", "floors": 7, "towers": 10, "conf": "medium", "src": "Squareyards / NoBroker / Propalyst listings (delivered 2008)", "units": 440},
+ "sobha-chrysanthemum": {"name": "Sobha Chrysanthemum", "developer": "Sobha", "floors_text": "11–14 floors", "floors": 14, "towers": 8, "conf": "medium", "src": "Squareyards / 99acres listings", "acres": 9.0, "units": 509},
+ "brigade-northridge-phase-ii": {"name": "Brigade Northridge Neo (Phase 2)", "developer": "Brigade", "floors_text": "B+G+11", "floors": 11, "towers": 2, "towers_note": "2 blocks, ~100 homes", "conf": "medium", "src": "RoofAndFloor / Houssed / 99acres listings", "acres": 1.7, "units": 100},
+ "brigade-eternia": {"name": "Brigade Eternia", "developer": "Brigade", "floors_text": "2B+G+14", "floors": 14, "towers": 12, "conf": "high", "src": "Brigade site + PropNewz + PropTimes + Housiey", "acres": 14.0, "units": 1124}
+}

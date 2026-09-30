@@ -1,0 +1,12 @@
+{
+ "vajram-newtown": {"name": "Vajram Newtown", "developer": "Vajram Group", "floors_text": "18 floors", "floors": 18, "towers": 2, "conf": "medium", "src": "Housiey / 99acres / Propsoch listings", "acres": 3.0, "units": 272},
+ "puravankara-purva-zenium": {"name": "Purva Zenium", "developer": "Puravankara", "floors_text": "12–13 floors", "floors": 13, "towers": 13, "conf": "medium", "src": "PropZilla / OneCityProperty listings", "acres": 10.05, "units": 872},
+ "sobha-square": {"name": "Sobha Square", "developer": "Sobha", "floors_text": "18 floors", "floors": 18, "towers": null, "towers_note": "sources say 1 or 4 towers", "conf": "medium", "src": "NoBroker / Squareyards listings", "acres": 4.0, "units": 288},
+ "max-meridian": {"name": "Max Meridian", "developer": "Maxworth Realty", "floors_text": "15 or 22 (sources differ)", "floors": null, "towers": null, "conf": "low", "src": "Listings conflict (6 towers × 15 floors vs 22 floors); 154 homes on 1 acre", "acres": 1.0, "units": 154},
+ "rmz-galleria": {"name": "RMZ Galleria Residences", "developer": "RMZ", "floors_text": "G+15", "floors": 15, "towers": 4, "conf": "medium", "src": "NoBroker / RoofAndFloor listings", "units": 322},
+ "manjeera-newyork": {"name": "Manjeera Newyork", "developer": "Manjeera Constructions", "floors_text": "18 floors", "floors": 18, "towers": 3, "conf": "medium", "src": "99acres / RoofAndFloor listings", "acres": 3.6, "units": 370},
+ "mahaveer-clover": {"name": "Mahaveer Clover", "developer": "Mahaveer Group", "floors_text": "4 floors", "floors": 4, "towers": 1, "conf": "medium", "src": "Squareyards / NoBroker listings", "acres": 2.0, "units": 85},
+ "nitesh-garden-enclave": {"name": "Nitesh Garden Enclave", "developer": "Nitesh Estates", "floors_text": "3 floors", "floors": 3, "towers": 11, "towers_note": "11 low-rise blocks", "conf": "medium", "src": "Houssed / NoBroker listings", "units": 176},
+ "elegant-exotica-yelahanka-new-town": {"name": "Elegant Exotica", "developer": "Elegant Builders & Developers", "floors_text": "6 floors (another source: G+7)", "floors": 6, "towers": 1, "conf": "low", "src": "RoofAndFloor / 99acres listings differ", "acres": 1.2, "units": 87},
+ "century-horizon": {"name": "Century Horizon", "developer": "Century Real Estate", "floors_text": "G+9", "floors": 9, "towers": 1, "towers_note": "one building with 4 wings, mixed-use with retail", "conf": "medium", "src": "Houssed / PropTimes listings", "acres": 2.0, "units": 152}
+}
