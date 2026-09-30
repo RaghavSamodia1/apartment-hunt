@@ -2,11 +2,34 @@
 
 Interactive map + shortlist tool for 2 & 3 BHK apartments up to ₹2.5 Cr in and around Yelahanka.
 
+## Shared shortlist (backend)
+
+Shortlist, rejects and notes can be shared between people. Click **Shared** in the top bar, enter the passcode and your name.
+**Copy invite link** gives a URL (`…/#join=<passcode>`) that opens the same dialog pre-filled for whoever you send it to.
+Changes sync within a few seconds, notes show who last changed a project, and edits made offline are sent when the connection is back.
+
+How it works: a small Supabase Postgres database (`supabase/migrations/`). The tables are closed to direct access; the page only
+calls three functions (`apt_get`, `apt_set`, `apt_change_code`) that each require the passcode (stored as a bcrypt hash).
+`data/config.js` holds the project URL and the *anon* key, which is meant to be public and can do nothing without the passcode.
+The passcode itself is never in this repo.
+
+Change the passcode (everyone then re-enters the new one):
+
+```
+curl -X POST https://<project>.supabase.co/rest/v1/rpc/apt_change_code \
+  -H "apikey: <anon key from data/config.js>" -H "Content-Type: application/json" \
+  -d '{"p_code":"old-passcode","p_new_code":"new-passcode"}'
+```
+
+Re-create the backend elsewhere: create a Supabase project, `supabase link`, `supabase db push`, then set the passcode hash once:
+`insert into public.apt_config (id, passcode_hash) values (1, extensions.crypt('your-passcode', extensions.gen_salt('bf')));`
+and put the new URL + anon key in `data/config.js`.
+
 ## Open it
 
 Double-click `index.html` (needs internet for the map tiles, Leaflet and the project photos).
-Use **one** way of opening it consistently — your shortlist lives in that browser/origin's local storage
-(`file://` and `http://localhost` are separate). Use **Export** to back up decisions or move them to another device.
+Without sharing turned on, your shortlist lives in that browser/origin's local storage (`file://` and `http://localhost` are separate);
+use **Export** to back it up. With **Shared** on, it lives in the database and follows you across devices.
 
 If you prefer a local server: `python3 -m http.server 8765` in this folder, then open http://localhost:8765.
 
@@ -16,7 +39,7 @@ If you prefer a local server: `python3 -m http.server 8765` in this folder, then
   drawer: photos, master plan, floors / towers / acres / homes, price by unit, connectivity, RERA, Google Maps links, notes.
 * **Triage** – one project at a time, `←` reject, `→` shortlist, `↓` skip, `Enter` details.
 * **Shortlist** / **Compare** – side-by-side table of everything you shortlisted.
-* Filters: BHK, status, budget, distance from Yelahanka, minimum floors, area, decision, "floors known", "has master plan".
+* Filters: BHK, status, budget, distance from Yelahanka, minimum and maximum floors, area, decision, "floors known", "has master plan".
   **+ Budget segment** adds ~155 smaller / cheaper projects that only have basic data.
 * Keyboard: `S` shortlist, `X` reject, `↑/↓` move through the list.
 

@@ -29,6 +29,7 @@
   --pin:#6f8fff; --pin-short:#4ade80; --pin-over:#f5c451;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
 button{font:inherit;color:inherit;cursor:pointer}
@@ -169,6 +170,12 @@ ul.clean li{margin:2px 0}
 .cmp thead th{background:var(--panel);position:sticky;top:0;z-index:2}
 .cmp img{width:100%;height:90px;object-fit:cover;border-radius:8px;display:block;margin-bottom:6px}
 .empty{padding:30px;text-align:center;color:var(--ink2)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--ink2);vertical-align:0}
+.dot.ok{background:var(--good)}.dot.err{background:var(--warn)}.dot.bad{background:var(--bad)}
+#syncDlg label{display:grid;gap:4px;margin:10px 0;font-size:12px;color:var(--ink2);font-weight:600}
+#syncDlg input{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:8px 10px;font:inherit;font-size:14px}
+#syncDlg .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+#syncMsg.bad{color:var(--bad)}#syncMsg.ok{color:var(--good)}
 .conf-h{color:var(--good);font-weight:700}.conf-m{color:var(--warn);font-weight:700}.conf-l{color:var(--bad);font-weight:700}
 dialog{border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--ink);max-width:560px;width:92vw;padding:20px;box-shadow:var(--shadow)}
 dialog::backdrop{background:rgba(0,0,0,.5)}
@@ -193,6 +200,7 @@ dialog::backdrop{background:rgba(0,0,0,.5)}
   .tab{padding:6px 9px;font-size:13px;white-space:nowrap}
   .ghost{padding:5px 8px;font-size:12px}
   #btnImport,#btnExport{display:none}
+  #btnSync .lbl{display:none}
   .filters:not(.open) .frow:not(:first-child){display:none}
   #btnFilters{display:inline-block}
   .tgrid{grid-template-columns:1fr}
@@ -216,6 +224,7 @@ dialog::backdrop{background:rgba(0,0,0,.5)}
       <button class="tab" data-mview="map" aria-selected="false">Map</button>
     </div>
     <div class="grow"></div>
+    <button class="ghost" id="btnSync" type="button"></button>
     <button class="ghost" id="btnExport" title="Download your shortlist, rejects and notes">Export</button>
     <button class="ghost" id="btnImport" title="Restore a previous export">Import</button>
     <button class="ghost" id="btnAbout" title="How to read this data">ⓘ About</button>
@@ -251,7 +260,10 @@ dialog::backdrop{background:rgba(0,0,0,.5)}
           <label>Within <b id="vKm">16 km</b> <input type="range" id="km" min="2" max="22" step="1" value="16"></label>
         </div>
         <div class="frow">
-          <label>Min floors <b id="vFloors">any</b> <input type="range" id="floors" min="0" max="40" step="1" value="0"></label>
+          <label>Floors ≥ <b id="vFloors">any</b> <input type="range" id="floors" min="0" max="40" step="1" value="0"></label>
+          <label>≤ <b id="vMaxFloors">any</b> <input type="range" id="maxfloors" min="3" max="45" step="1" value="45"></label>
+        </div>
+        <div class="frow">
           <select id="area" title="Area"><option value="">All areas</option></select>
           <select id="dec" title="Decision">
             <option value="open">Hide rejected</option>
@@ -288,6 +300,14 @@ dialog::backdrop{background:rgba(0,0,0,.5)}
 </div>
 
 <div class="lb fit" id="lb"><button class="lbx" id="lbx" aria-label="Close">✕</button><div class="cap" id="lbcap"></div><img id="lbimg" alt=""></div>
+<dialog id="syncDlg"><form method="dialog" id="syncForm">
+<h2 style="margin-top:0">Shared shortlist</h2>
+<p class="note" id="syncIntro">Shortlist, rejects and notes are saved in a private database and appear for everyone who joins with the same passcode. Nobody needs an account.</p>
+<label for="syncCode">Passcode<input id="syncCode" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="xxxx-xxxx-xxxx"></label>
+<label for="syncWho">Your name (shown next to your changes)<input id="syncWho" maxlength="40" autocomplete="off" placeholder="e.g. Raghav"></label>
+<p class="note" id="syncMsg"></p>
+<div class="row"><button class="btn short" id="syncGo" type="button">Connect</button><button class="btn" id="syncCopy" type="button">Copy invite link</button><button class="btn" id="syncOff" type="button">Stop sharing</button><button class="btn" value="close">Close</button></div>
+</form></dialog>
 <dialog id="about"><form method="dialog"><h2 style="margin-top:0">How to read this data</h2>
 <p><b>Where it comes from.</b> Project pages on Squareyards (price, size, units, coordinates, photos, master plans, RERA numbers), cross-checked with PropNewz, Housiey, PropTimes, PropZilla, 99acres, NoBroker, RoofAndFloor and builder pages for floors and towers. Scraped <span id="aboutDate"></span>.</p>
 <p><b>Floors / towers.</b> <span class="conf-h">Two+ sources agree</span> means independent pages gave the same number. <span class="conf-m">From portal listings</span> means only one or two listing pages had it. <span class="conf-l">Sources differ</span> means pages disagree (often phases or towers of different heights) — check the RERA page or ask the builder. “Floors” is the number above the ground floor unless the text says otherwise (e.g. 2B+G+14 = 2 basements, ground, 14 floors).</p>
@@ -300,6 +320,7 @@ dialog::backdrop{background:rgba(0,0,0,.5)}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
 <script src="data/projects.js"></script>
+<script src="data/config.js"></script>
 <script>
 (function(){
 'use strict';
@@ -320,14 +341,98 @@ function save(){ try { localStorage.setItem(KEY, JSON.stringify(store)); } catch
 const dec = id => store.d[id] || '';
 function setDec(id, v){
   if (dec(id) === v) delete store.d[id]; else store.d[id] = v;
-  save(); refresh(); if (state.sel === id) renderDrawer(id);
+  save(); queueSync(id, {d:store.d[id] || ''}); refresh(); if (state.sel === id) renderDrawer(id);
   if (state.view === 'triage') renderTriage();
   toast(dec(id) === 's' ? 'Shortlisted ★' : dec(id) === 'r' ? 'Rejected' : 'Cleared');
 }
 
+/* ---------- shared shortlist (Supabase, passcode-protected RPCs) ---------- */
+const SYNCCFG = window.SYNC_CONFIG || null;
+const SK = 'aptHunt.sync', PK = 'aptHunt.pending';
+const sync = {code:'', who:'', status:'local', last:null, by:{}, at:{}, pending:{}, busy:false, noteTimer:null};
+try { const r = JSON.parse(localStorage.getItem(SK) || '{}'); sync.code = r.code || ''; sync.who = r.who || ''; } catch(e){}
+try { sync.pending = JSON.parse(localStorage.getItem(PK) || '{}'); } catch(e){}
+const saveSync = () => { try { localStorage.setItem(SK, JSON.stringify({code:sync.code, who:sync.who})); } catch(e){} };
+const savePending = () => { try { localStorage.setItem(PK, JSON.stringify(sync.pending)); } catch(e){} };
+async function rpc(fn, args){
+  const r = await fetch(SYNCCFG.url + '/rest/v1/rpc/' + fn, {method:'POST', headers:{apikey:SYNCCFG.key, 'Content-Type':'application/json'}, body:JSON.stringify(args)});
+  if (!r.ok) { let e = {}; try { e = await r.json(); } catch(_) {} const err = new Error(e.message || 'http ' + r.status); err.code = e.code; err.status = r.status; throw err; }
+  const t = await r.text(); return t ? JSON.parse(t) : null;
+}
+function setSyncStatus(st){
+  sync.status = st;
+  const b = $('#btnSync'); if (!b) return;
+  const label = {local:'Local only', ok:'Shared', err:'Offline', bad:'Wrong code'}[st];
+  b.innerHTML = `<span class="dot ${st}"></span><span class="lbl">${label}</span>`;
+  b.title = st === 'ok' ? 'Shared shortlist is on' + (sync.last ? ' · synced ' + sync.last.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '') : st === 'local' ? 'Decisions are saved only in this browser — click to share' : st === 'err' ? 'Can’t reach the server — changes are kept and will be sent when it is back' : 'The shared passcode was rejected — click to re-enter';
+}
+function handleSyncErr(e){ setSyncStatus(e && (e.code === '28000' || /bad_code/.test(e.message)) ? 'bad' : 'err'); }
+function queueSync(id, patch){
+  if (!sync.code) return;
+  const op = sync.pending[id] || (sync.pending[id] = {v:0});
+  Object.assign(op, patch); op.v++; savePending(); flushSync();
+}
+async function flushSync(){
+  if (!sync.code || sync.busy || sync.status === 'bad') return;
+  sync.busy = true;
+  try {
+    let guard = 0;
+    while (Object.keys(sync.pending).length && guard++ < 200) {     // re-read the queue each time so edits made mid-flush still go out
+      const id = Object.keys(sync.pending)[0], op = sync.pending[id], v = op.v, args = {p_code:sync.code, p_pid:id, p_who:sync.who || null};
+      if ('d' in op) args.p_decision = op.d || '';
+      if ('n' in op) args.p_note = op.n || '';
+      await rpc('apt_set', args);
+      if (sync.pending[id] && sync.pending[id].v === v) delete sync.pending[id];
+      savePending();
+    }
+    sync.last = new Date(); setSyncStatus('ok');
+  } catch(e){ handleSyncErr(e); } finally { sync.busy = false; }
+}
+async function pullSync(){
+  if (!sync.code || sync.status === 'bad') return;
+  try {
+    const rows = await rpc('apt_get', {p_code:sync.code});
+    const d = {}, n = {}, by = {}, at = {};
+    rows.forEach(r => { if (r.d) d[r.id] = r.d; if (r.n) n[r.id] = r.n; by[r.id] = r.by; at[r.id] = r.at; });
+    Object.entries(sync.pending).forEach(([id, op]) => {           // keep edits that have not reached the server yet
+      if ('d' in op) { if (op.d) d[id] = op.d; else delete d[id]; }
+      if ('n' in op) { if (op.n) n[id] = op.n; else delete n[id]; }
+    });
+    const ae = document.activeElement, typing = ae && ae.id === 'note' && state.sel;
+    if (typing) { if (ae.value.trim()) n[state.sel] = ae.value; else delete n[state.sel]; }
+    const changed = JSON.stringify(d) !== JSON.stringify(store.d) || JSON.stringify(n) !== JSON.stringify(store.n);
+    store.d = d; store.n = n; sync.by = by; sync.at = at; save();
+    sync.last = new Date(); setSyncStatus('ok');
+    if (changed) { refresh(); if (state.sel && !typing) renderDrawer(state.sel); if (state.view === 'triage') renderTriage(); }
+  } catch(e){ handleSyncErr(e); }
+}
+async function connectSync(code, who){
+  const prev = {code:sync.code, who:sync.who};
+  sync.code = code.trim().toLowerCase(); sync.who = (who || '').trim().slice(0, 40); sync.status = 'local';
+  try {
+    const rows = await rpc('apt_get', {p_code:sync.code});
+    const remote = new Set(rows.map(r => r.id));
+    Object.keys(store.d).forEach(id => { if (!remote.has(id)) queueSync(id, {d:store.d[id]}); });                 // share what this browser already had
+    Object.keys(store.n).forEach(id => { if (!remote.has(id) || !rows.find(r => r.id === id && r.n)) queueSync(id, {n:store.n[id]}); });
+    saveSync(); setSyncStatus('ok'); await flushSync(); await pullSync(); startPolling();
+    return true;
+  } catch(e){
+    sync.code = prev.code; sync.who = prev.who;
+    if (e.code === '28000' || /bad_code/.test(e.message)) { setSyncStatus(prev.code ? 'ok' : 'local'); return 'bad'; }
+    setSyncStatus(prev.code ? 'err' : 'local'); return 'err';
+  }
+}
+function disconnectSync(){ sync.code = ''; sync.pending = {}; savePending(); saveSync(); clearInterval(sync.poll); sync.poll = null; setSyncStatus('local'); }
+function startPolling(){
+  if (sync.poll) return;
+  sync.poll = setInterval(() => { if (!document.hidden && sync.code) pullSync().then(flushSync); }, 8000);
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden && sync.code) pullSync().then(flushSync); });
+const timeAgo = iso => { const m = Math.round((Date.now() - new Date(iso)) / 60000); return m < 1 ? 'just now' : m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' d ago'; };
+
 /* ---------- state ---------- */
 const state = {
-  q:'', sort:'km', bhk:new Set(), st:new Set(), budget:BUDGET_CAP, km:16, floors:0, area:'', dec:'open',
+  q:'', sort:'km', bhk:new Set(), st:new Set(), budget:BUDGET_CAP, km:16, floors:0, maxFloors:45, area:'', dec:'open',
   ext:false, hasFloors:false, hasMP:false, sel:null, view:'explore', gi:0, tri:null
 };
 
@@ -372,6 +477,7 @@ function filtered(){
     if (p.pmin != null && p.pmin > state.budget + 1e-9) return false;
     if (state.km < 22 && p.km > state.km) return false;
     if (state.floors && !(p.floors >= state.floors)) return false;
+    if (state.maxFloors < 45 && !(p.floors && p.floors <= state.maxFloors)) return false;
     if (state.area && p.area !== state.area) return false;
     if (state.hasFloors && !p.floors) return false;
     if (state.hasMP && !(p.img && p.img.master && p.img.master.length)) return false;
@@ -564,7 +670,7 @@ function renderDrawer(id){
     ${p.rera ? `<div class="note" style="margin-top:6px">RERA: <code>${esc(p.rera)}</code></div>` : '<div class="note" style="margin-top:6px">RERA number not found in sources — verify before paying any token amount.</div>'}
     <div class="note">Pin location: ${p.geo_note ? esc(p.geo_note) : p.geo_q === 'verified' ? 'cross-checked against a second source' : p.geo_q === 'single' ? 'from one listing source — open Google Maps to confirm' : 'approximate'}.</div>
     </div>
-    <div class="sec"><h3>Your notes</h3><textarea id="note" placeholder="Site visit notes, broker quotes, questions…">${esc(store.n[id] || '')}</textarea></div>
+    <div class="sec"><h3>Notes</h3><textarea id="note" placeholder="Site visit notes, broker quotes, questions…">${esc(store.n[id] || '')}</textarea>${sync.code && sync.at[id] ? `<div class="note" style="margin-top:4px">Last change${sync.by[id] ? ' by ' + esc(sync.by[id]) : ''} · ${esc(timeAgo(sync.at[id]))}</div>` : ''}</div>
   </div>
   <div class="dfoot">
     <button class="btn short" data-act="s" aria-pressed="${d === 's'}">★ Shortlist</button>
@@ -583,7 +689,10 @@ $('#drawer').addEventListener('click', e => {
   const lb = t.closest('[data-lb]'); if (lb && lb.dataset.lb) openLB(lb.dataset.lb, lb.dataset.cap);
 });
 $('#drawer').addEventListener('input', e => {
-  if (e.target.id === 'note' && state.sel) { const v = e.target.value; if (v.trim()) store.n[state.sel] = v; else delete store.n[state.sel]; save(); }
+  if (e.target.id === 'note' && state.sel) {
+    const v = e.target.value, id = state.sel; if (v.trim()) store.n[id] = v; else delete store.n[id]; save();
+    clearTimeout(sync.noteTimer); sync.noteTimer = setTimeout(() => queueSync(id, {n:v.trim() ? v : ''}), 700);
+  }
 });
 
 /* ---------- lightbox ---------- */
@@ -633,7 +742,7 @@ function triageAct(a){
   const q = triageQueue(); const i = q.findIndex(p => p.id === state.tri); if (i < 0) return;
   const next = (q[i + 1] || q[0] || {}).id;
   if (a === 'skip') { state.tri = next; return renderTriage(); }
-  const id = state.tri; store.d[id] = a; save(); state.tri = (q[i + 1] || q[i - 1] || {}).id;
+  const id = state.tri; store.d[id] = a; save(); queueSync(id, {d:a}); state.tri = (q[i + 1] || q[i - 1] || {}).id;
   refresh(); renderTriage(); toast(a === 's' ? 'Shortlisted ★' : 'Rejected');
 }
 
@@ -656,6 +765,7 @@ function renderCompare(){
     ${row('Distance', p => p.km + ' km')}
     ${row('RERA', p => `<span class="note">${esc(p.rera || '—')}</span>`)}
     ${row('Notes', p => `<span class="note">${esc(store.n[p.id] || '')}</span>`)}
+    ${sync.code ? row('Changed by', p => `<span class="note">${esc(sync.by[p.id] || '—')}${sync.at[p.id] ? ' · ' + esc(timeAgo(sync.at[p.id])) : ''}</span>`) : ''}
     ${row('Links', p => `<div class="links"><a href="${esc(gmapsQ(p))}" target="_blank" rel="noopener">Maps ↗</a><a href="#" data-open="${esc(p.id)}">Details</a></div>`)}
     </tbody></table></div>`;
 }
@@ -695,6 +805,7 @@ function bind(){
   $('#budget').addEventListener('input', e => { state.budget = +e.target.value; $('#vBudget').textContent = '₹' + state.budget.toFixed(1) + ' Cr'; refresh(); });
   $('#km').addEventListener('input', e => { state.km = +e.target.value; $('#vKm').textContent = state.km >= 22 ? 'any' : state.km + ' km'; refresh(); });
   $('#floors').addEventListener('input', e => { state.floors = +e.target.value; $('#vFloors').textContent = state.floors ? '≥ ' + state.floors : 'any'; refresh(); });
+  $('#maxfloors').addEventListener('input', e => { state.maxFloors = +e.target.value; $('#vMaxFloors').textContent = state.maxFloors >= 45 ? 'any' : state.maxFloors; refresh(); });
   $('#area').addEventListener('change', e => { state.area = e.target.value; refresh(); });
   $('#dec').addEventListener('change', e => { state.dec = e.target.value; refresh(); });
   $('#bhkChips').addEventListener('click', e => {
@@ -706,9 +817,9 @@ function bind(){
   const tog = (id, key) => $(id).addEventListener('click', e => { const on = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', on); state[key] = on; refresh(); });
   tog('#chipExt', 'ext'); tog('#chipHasFloors', 'hasFloors'); tog('#chipHasMP', 'hasMP');
   $('#chipReset').addEventListener('click', () => {
-    Object.assign(state, {q:'', sort:'km', budget:BUDGET_CAP, km:16, floors:0, area:'', dec:'open', ext:false, hasFloors:false, hasMP:false}); state.bhk.clear(); state.st.clear();
-    $('#q').value = ''; $('#sort').value = 'km'; $('#budget').value = BUDGET_CAP; $('#km').value = 16; $('#floors').value = 0; $('#area').value = ''; $('#dec').value = 'open';
-    $('#vBudget').textContent = '₹' + BUDGET_CAP.toFixed(1) + ' Cr'; $('#vKm').textContent = '16 km'; $('#vFloors').textContent = 'any';
+    Object.assign(state, {q:'', sort:'km', budget:BUDGET_CAP, km:16, floors:0, maxFloors:45, area:'', dec:'open', ext:false, hasFloors:false, hasMP:false}); state.bhk.clear(); state.st.clear();
+    $('#q').value = ''; $('#sort').value = 'km'; $('#budget').value = BUDGET_CAP; $('#km').value = 16; $('#floors').value = 0; $('#maxfloors').value = 45; $('#area').value = ''; $('#dec').value = 'open';
+    $('#vBudget').textContent = '₹' + BUDGET_CAP.toFixed(1) + ' Cr'; $('#vKm').textContent = '16 km'; $('#vFloors').textContent = 'any'; $('#vMaxFloors').textContent = 'any';
     $$('.chip[aria-pressed]').forEach(c => c.setAttribute('aria-pressed', 'false')); state.fitNext = true; refresh();
   });
 }
@@ -723,7 +834,7 @@ $('#btnExport').addEventListener('click', () => {
 $('#btnImport').addEventListener('click', () => $('#fileImport').click());
 $('#fileImport').addEventListener('change', e => {
   const f = e.target.files[0]; if (!f) return;
-  f.text().then(t => { const j = JSON.parse(t); store.d = Object.assign({}, store.d, j.d || {}); store.n = Object.assign({}, store.n, j.n || {}); save(); refresh(); toast('Imported'); }).catch(() => toast('Not a valid export file'));
+  f.text().then(t => { const j = JSON.parse(t); store.d = Object.assign({}, store.d, j.d || {}); store.n = Object.assign({}, store.n, j.n || {}); save(); Object.keys(j.d || {}).forEach(id => queueSync(id, {d:j.d[id]})); Object.keys(j.n || {}).forEach(id => queueSync(id, {n:j.n[id]})); refresh(); toast('Imported'); }).catch(() => toast('Not a valid export file'));
 });
 $('#btnFilters').addEventListener('click', () => { const f = $('#filters'); f.classList.toggle('open'); $('#btnFilters').textContent = f.classList.contains('open') ? 'Filters ▴' : 'Filters ▾'; });
 $('#btnAbout').addEventListener('click', () => { $('#aboutDate').textContent = META.generated || ''; $('#about').showModal(); });
@@ -752,11 +863,43 @@ document.addEventListener('keydown', e => {
   }
 });
 
+/* ---------- shared-list dialog ---------- */
+function openSyncDlg(prefill){
+  const on = !!sync.code;
+  $('#syncCode').value = prefill || sync.code || ''; $('#syncWho').value = sync.who || '';
+  $('#syncMsg').className = 'note'; $('#syncMsg').textContent = sync.status === 'bad' ? 'The saved passcode was rejected. Enter the current one.' : on ? 'Connected. Everything you change is shared with people who use this passcode.' : 'Not shared yet. Decisions stay in this browser.';
+  $('#syncGo').textContent = on ? 'Update' : 'Connect';
+  $('#syncCopy').hidden = !on; $('#syncOff').hidden = !on;
+  $('#syncDlg').showModal();
+}
+$('#btnSync').addEventListener('click', () => openSyncDlg());
+$('#syncGo').addEventListener('click', async () => {
+  const code = $('#syncCode').value.trim(), who = $('#syncWho').value.trim(), m = $('#syncMsg');
+  if (code.length < 8) { m.className = 'note bad'; m.textContent = 'Enter the full passcode.'; return; }
+  if (!who) { m.className = 'note bad'; m.textContent = 'Add your name so others can see who changed what.'; return; }
+  m.className = 'note'; m.textContent = 'Connecting…'; $('#syncGo').disabled = true;
+  const r = await connectSync(code, who); $('#syncGo').disabled = false;
+  if (r === true) { m.className = 'note ok'; m.textContent = 'Connected. Your existing decisions were shared.'; $('#syncCopy').hidden = false; $('#syncOff').hidden = false; $('#syncGo').textContent = 'Update'; toast('Sharing is on'); }
+  else if (r === 'bad') { m.className = 'note bad'; m.textContent = 'That passcode is not right.'; }
+  else { m.className = 'note bad'; m.textContent = 'Could not reach the server. Check your connection and try again.'; }
+});
+$('#syncCopy').addEventListener('click', async () => {
+  const link = location.origin + location.pathname + '#join=' + sync.code;
+  try { await navigator.clipboard.writeText(link); toast('Invite link copied'); } catch(e){ $('#syncMsg').className = 'note'; $('#syncMsg').textContent = link; }
+});
+$('#syncOff').addEventListener('click', () => { disconnectSync(); $('#syncDlg').close(); toast('Stopped sharing — your list stays in this browser'); });
+
 /* ---------- boot ---------- */
 $('#sub').textContent = `${META.area || 'North Bangalore'} · 2 & 3 BHK · ≤ ₹${BUDGET_CAP} Cr${META.generated ? ' · data ' + META.generated : ''}`;
 state.fitNext = true;
 refresh();
 setTimeout(() => map.invalidateSize(), 100);
+if (SYNCCFG) {
+  setSyncStatus(sync.code ? 'ok' : 'local');
+  if (sync.code) { pullSync().then(flushSync); startPolling(); }
+  const jm = /^#join=([a-z0-9-]{8,40})$/i.exec(location.hash);
+  if (jm) { history.replaceState(null, '', location.pathname + location.search); setTimeout(() => openSyncDlg(jm[1].toLowerCase()), 400); }
+} else { $('#btnSync').hidden = true; }
 })();
 </script>
 </body>
